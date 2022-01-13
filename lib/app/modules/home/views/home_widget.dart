@@ -13,7 +13,6 @@ class CustomeWidget extends StatelessWidget {
     this.firstChild,
     this.secondChild,
     this.customeStyle = CustomeStyle.row,
-    this.icon,
     this.alignment,
     this.padding,
     this.color,
@@ -25,13 +24,12 @@ class CustomeWidget extends StatelessWidget {
     this.transformAlignment,
     this.clipBehavior = Clip.none,
   }) : super(key: key);
-
-  final double? width;
-  final double? height;
   final Widget? firstChild;
   final Widget? secondChild;
   final CustomeStyle customeStyle;
-  final Widget? icon;
+
+  final double? width;
+  final double? height;
   final AlignmentGeometry? alignment;
   final EdgeInsetsGeometry? padding;
   final Color? color;
@@ -65,6 +63,18 @@ class CustomeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: _buildStyle(),
+      width: width,
+      height: height,
+      alignment: alignment,
+      padding: padding,
+      color: color,
+      decoration: decoration,
+      foregroundDecoration: foregroundDecoration,
+      constraints: constraints,
+      margin: margin,
+      transform: transform,
+      transformAlignment: transformAlignment,
+      clipBehavior: clipBehavior,
     );
   }
 }
