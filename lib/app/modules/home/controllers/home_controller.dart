@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
+import 'package:hd_getx_module/app/modules/home/views/home_widget.dart';
 
 class HomeController extends GetxController {
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -14,5 +14,4 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
-  void increment() => count.value++;
 }

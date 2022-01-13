@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hd_getx_module/app/modules/home/controllers/address_controller.dart';
 
 enum AddressStyle {
   row,
@@ -46,7 +48,8 @@ class AddressWidget extends StatelessWidget {
   final Clip clipBehavior;
 
   Widget _buildChild() {
-    if (customeStyle == AddressStyle.row) {
+    var controller = Get.put(AddressController());
+    if (controller.addressStyle.value == AddressStyle.row) {
       return Column(
         children: [
           Row(
@@ -63,6 +66,12 @@ class AddressWidget extends StatelessWidget {
               fourthChild,
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _changeStyleButton(),
+            ],
+          ),
         ],
       );
     } else {
@@ -72,27 +81,41 @@ class AddressWidget extends StatelessWidget {
           secondChild,
           thirdChild,
           fourthChild,
+          _changeStyleButton(),
         ],
       );
     }
   }
 
+  Widget _changeStyleButton() {
+    return SizedBox(
+      width: 50,
+      height: 50,
+      child: IconButton(
+        onPressed: () {
+          Get.find<AddressController>().changeStyle();
+        },
+        icon: const Icon(Icons.change_circle),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _buildChild(),
-      width: width,
-      height: height,
-      alignment: alignment,
-      padding: padding,
-      color: color,
-      decoration: decoration,
-      foregroundDecoration: foregroundDecoration,
-      constraints: constraints,
-      margin: margin,
-      transform: transform,
-      transformAlignment: transformAlignment,
-      clipBehavior: clipBehavior,
-    );
+    return Obx(() => Container(
+          child: _buildChild(),
+          width: width,
+          height: height,
+          alignment: alignment,
+          padding: padding,
+          color: color,
+          decoration: decoration,
+          foregroundDecoration: foregroundDecoration,
+          constraints: constraints,
+          margin: margin,
+          transform: transform,
+          transformAlignment: transformAlignment,
+          clipBehavior: clipBehavior,
+        ));
   }
 }
