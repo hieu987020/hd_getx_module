@@ -10,8 +10,10 @@ class AddressWidget extends StatelessWidget {
     Key? key,
     this.width,
     this.height,
-    this.firstChild,
-    this.secondChild,
+    required this.firstChild,
+    required this.secondChild,
+    this.thirdChild,
+    this.fourthChild,
     this.customeStyle = AddressStyle.row,
     this.alignment,
     this.padding,
@@ -24,8 +26,10 @@ class AddressWidget extends StatelessWidget {
     this.transformAlignment,
     this.clipBehavior = Clip.none,
   }) : super(key: key);
-  final Widget? firstChild;
-  final Widget? secondChild;
+  final Widget firstChild;
+  final Widget secondChild;
+  final Widget? thirdChild;
+  final Widget? fourthChild;
   final AddressStyle customeStyle;
 
   final double? width;
@@ -46,15 +50,15 @@ class AddressWidget extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          firstChild ?? const SizedBox(),
-          secondChild ?? const SizedBox(),
+          firstChild,
+          secondChild,
         ],
       );
     } else {
       return Column(
         children: [
-          firstChild ?? const SizedBox(),
-          secondChild ?? const SizedBox(),
+          firstChild,
+          secondChild,
         ],
       );
     }
