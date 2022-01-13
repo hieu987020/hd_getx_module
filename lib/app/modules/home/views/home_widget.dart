@@ -8,7 +8,7 @@ enum AddressStyle {
 }
 
 class AddressWidget extends StatelessWidget {
-  const AddressWidget({
+  AddressWidget({
     Key? key,
     this.width,
     this.height,
@@ -46,9 +46,9 @@ class AddressWidget extends StatelessWidget {
   final Matrix4? transform;
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
+  final controller = Get.put(AddressController());
 
   Widget _buildChild() {
-    var controller = Get.put(AddressController());
     if (controller.addressStyle.value == AddressStyle.row) {
       return Column(
         children: [

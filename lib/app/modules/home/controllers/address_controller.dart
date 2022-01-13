@@ -21,7 +21,7 @@ class AddressController extends GetxController {
     if (addressStyle.value == AddressStyle.row) {
       addressStyle(AddressStyle.column);
     } else {
-      addressStyle(AddressStyle.column);
+      addressStyle(AddressStyle.row);
     }
   }
 }
