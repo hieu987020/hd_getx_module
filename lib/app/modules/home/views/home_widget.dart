@@ -28,12 +28,14 @@ class AddressWidget extends StatelessWidget {
     this.transformAlignment,
     this.clipBehavior = Clip.none,
   }) : super(key: key);
+
+  //? customize
   final Widget firstChild;
   final Widget secondChild;
   final Widget thirdChild;
   final Widget fourthChild;
   final AddressStyle customeStyle;
-
+  //? basic container
   final double? width;
   final double? height;
   final AlignmentGeometry? alignment;
@@ -46,6 +48,7 @@ class AddressWidget extends StatelessWidget {
   final Matrix4? transform;
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
+
   final controller = Get.put(AddressController());
 
   Widget _buildChild() {

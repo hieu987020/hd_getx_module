@@ -15,8 +15,8 @@ class HomeView extends GetView<HomeController> {
       ),
       body: Center(
         child: AddressWidget(
-          width: 500,
-          height: 500,
+          width: 400,
+          height: 400,
           color: Colors.grey,
           firstChild: Container(
             color: Colors.green,
@@ -26,19 +26,19 @@ class HomeView extends GetView<HomeController> {
           ),
           secondChild: Container(
             color: Colors.blue,
-            width: 150,
+            width: 120,
             height: 50,
             child: const Center(child: Text('second child')),
           ),
           thirdChild: Container(
             color: Colors.red,
-            width: 200,
+            width: 140,
             height: 50,
             child: const Center(child: Text('third child')),
           ),
           fourthChild: Container(
             color: Colors.yellow,
-            width: 250,
+            width: 160,
             height: 50,
             child: const Center(child: Text('fourth child')),
           ),
