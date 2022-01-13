@@ -14,10 +14,11 @@ class HomeView extends GetView<HomeController> {
         title: const Text('HomeView'),
         centerTitle: true,
       ),
-      body: const CustomeWidget(
-        firstChild: Text('first chsild'),
+      body: const AddressWidget(
+        color: Colors.grey,
+        firstChild: Text('first child'),
         secondChild: Text('second child'),
-        customeStyle: CustomeStyle.column,
+        customeStyle: AddressStyle.column,
       ),
     );
   }

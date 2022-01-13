@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-enum CustomeStyle {
+enum AddressStyle {
   row,
   column,
 }
 
-class CustomeWidget extends StatelessWidget {
-  const CustomeWidget({
+class AddressWidget extends StatelessWidget {
+  const AddressWidget({
     Key? key,
     this.width,
     this.height,
     this.firstChild,
     this.secondChild,
-    this.customeStyle = CustomeStyle.row,
+    this.customeStyle = AddressStyle.row,
     this.alignment,
     this.padding,
     this.color,
@@ -26,7 +26,7 @@ class CustomeWidget extends StatelessWidget {
   }) : super(key: key);
   final Widget? firstChild;
   final Widget? secondChild;
-  final CustomeStyle customeStyle;
+  final AddressStyle customeStyle;
 
   final double? width;
   final double? height;
@@ -41,9 +41,10 @@ class CustomeWidget extends StatelessWidget {
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
 
-  Widget _buildStyle() {
-    if (customeStyle == CustomeStyle.row) {
+  Widget _buildChild() {
+    if (customeStyle == AddressStyle.row) {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           firstChild ?? const SizedBox(),
           secondChild ?? const SizedBox(),
@@ -62,7 +63,7 @@ class CustomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _buildStyle(),
+      child: _buildChild(),
       width: width,
       height: height,
       alignment: alignment,
