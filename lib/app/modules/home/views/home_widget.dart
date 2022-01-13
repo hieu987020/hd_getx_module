@@ -16,7 +16,10 @@ class AddressWidget extends StatelessWidget {
     required this.secondChild,
     required this.thirdChild,
     required this.fourthChild,
-    this.customeStyle = AddressStyle.row,
+    required this.fifthChild,
+    required this.sixthChild,
+    this.addressStyle = AddressStyle.row,
+    this.showChangeStyleIcon = false,
     this.alignment,
     this.padding,
     this.color,
@@ -34,7 +37,12 @@ class AddressWidget extends StatelessWidget {
   final Widget secondChild;
   final Widget thirdChild;
   final Widget fourthChild;
-  final AddressStyle customeStyle;
+  final Widget fifthChild;
+  final Widget sixthChild;
+  final AddressStyle addressStyle;
+
+  final bool showChangeStyleIcon;
+
   //? basic container
   final double? width;
   final double? height;
@@ -54,27 +62,30 @@ class AddressWidget extends StatelessWidget {
   Widget _buildChild() {
     if (controller.addressStyle.value == AddressStyle.row) {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               firstChild,
               secondChild,
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               thirdChild,
               fourthChild,
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _changeStyleButton(),
+              fifthChild,
+              sixthChild,
             ],
           ),
+          (showChangeStyleIcon) ? _changeStyleButton() : const SizedBox(),
         ],
       );
     } else {
@@ -84,21 +95,40 @@ class AddressWidget extends StatelessWidget {
           secondChild,
           thirdChild,
           fourthChild,
-          _changeStyleButton(),
+          fifthChild,
+          sixthChild,
+          (showChangeStyleIcon) ? _changeStyleButton() : const SizedBox(),
         ],
       );
     }
   }
 
   Widget _changeStyleButton() {
-    return SizedBox(
-      width: 50,
-      height: 50,
-      child: IconButton(
-        onPressed: () {
-          Get.find<AddressController>().changeStyle();
-        },
-        icon: const Icon(Icons.change_circle),
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              color: Colors.white,
+              width: 60,
+              height: 60,
+              child: IconButton(
+                onPressed: () {
+                  Get.find<AddressController>().changeStyle();
+                },
+                icon: const Center(
+                  child: Icon(
+                    Icons.change_circle,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

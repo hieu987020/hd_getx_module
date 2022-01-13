@@ -18,32 +18,37 @@ class HomeView extends GetView<HomeController> {
           width: 400,
           height: 400,
           color: Colors.grey,
-          firstChild: Container(
-            color: Colors.green,
-            width: 100,
-            height: 50,
-            child: const Center(child: Text('first child')),
-          ),
-          secondChild: Container(
-            color: Colors.blue,
-            width: 120,
-            height: 50,
-            child: const Center(child: Text('second child')),
-          ),
-          thirdChild: Container(
-            color: Colors.red,
-            width: 140,
-            height: 50,
-            child: const Center(child: Text('third child')),
-          ),
-          fourthChild: Container(
-            color: Colors.yellow,
-            width: 160,
-            height: 50,
-            child: const Center(child: Text('fourth child')),
-          ),
-          customeStyle: AddressStyle.column,
+          addressStyle: AddressStyle.column,
+          showChangeStyleIcon: true,
+          firstChild: const MyChild(text: 'first child', color: Colors.green),
+          secondChild: const MyChild(text: 'second child', color: Colors.blue),
+          thirdChild: const MyChild(text: 'third child', color: Colors.red),
+          fourthChild:
+              const MyChild(text: 'fourth child', color: Colors.yellow),
+          fifthChild: const MyChild(text: 'fifth child', color: Colors.pink),
+          sixthChild: const MyChild(text: 'sixth child', color: Colors.brown),
         ),
+      ),
+    );
+  }
+}
+
+class MyChild extends StatelessWidget {
+  const MyChild({
+    Key? key,
+    required this.color,
+    required this.text,
+  }) : super(key: key);
+  final Color color;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: color,
+      width: 100,
+      height: 50,
+      child: Center(
+        child: Text(text),
       ),
     );
   }
