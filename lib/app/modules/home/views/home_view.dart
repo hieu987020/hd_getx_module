@@ -31,6 +31,18 @@ class HomeView extends GetView<HomeController> {
             height: 50,
             child: const Center(child: Text('second child')),
           ),
+          thirdChild: Container(
+            color: Colors.blue,
+            width: 200,
+            height: 50,
+            child: const Center(child: Text('third child')),
+          ),
+          fourthChild: Container(
+            color: Colors.blue,
+            width: 200,
+            height: 50,
+            child: const Center(child: Text('fourth child')),
+          ),
           customeStyle: AddressStyle.column,
         ),
       ),

@@ -12,8 +12,8 @@ class AddressWidget extends StatelessWidget {
     this.height,
     required this.firstChild,
     required this.secondChild,
-    this.thirdChild,
-    this.fourthChild,
+    required this.thirdChild,
+    required this.fourthChild,
     this.customeStyle = AddressStyle.row,
     this.alignment,
     this.padding,
@@ -28,8 +28,8 @@ class AddressWidget extends StatelessWidget {
   }) : super(key: key);
   final Widget firstChild;
   final Widget secondChild;
-  final Widget? thirdChild;
-  final Widget? fourthChild;
+  final Widget thirdChild;
+  final Widget fourthChild;
   final AddressStyle customeStyle;
 
   final double? width;
@@ -47,11 +47,22 @@ class AddressWidget extends StatelessWidget {
 
   Widget _buildChild() {
     if (customeStyle == AddressStyle.row) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return Column(
         children: [
-          firstChild,
-          secondChild,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              firstChild,
+              secondChild,
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              thirdChild,
+              fourthChild,
+            ],
+          ),
         ],
       );
     } else {
@@ -59,6 +70,8 @@ class AddressWidget extends StatelessWidget {
         children: [
           firstChild,
           secondChild,
+          thirdChild,
+          fourthChild,
         ],
       );
     }
