@@ -2,13 +2,13 @@ import 'package:get/get.dart';
 import 'package:hd_getx_module/app/modules/home/views/home_widget.dart';
 
 class AddressController extends GetxController {
-  final addressStyle = AddressStyle.row.obs;
+  final addressStyle = AddressStyle.oneColumn.obs;
 
   void changeStyle() {
-    if (addressStyle.value == AddressStyle.row) {
-      addressStyle(AddressStyle.column);
+    if (addressStyle.value == AddressStyle.oneColumn) {
+      addressStyle(AddressStyle.twoColumn);
     } else {
-      addressStyle(AddressStyle.row);
+      addressStyle(AddressStyle.oneColumn);
     }
   }
 }

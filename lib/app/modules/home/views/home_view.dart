@@ -16,17 +16,18 @@ class HomeView extends GetView<HomeController> {
       body: Center(
         child: AddressWidget(
           width: 400,
-          height: 400,
+          height: 450,
           color: Colors.grey,
-          addressStyle: AddressStyle.column,
+          addressStyle: AddressStyle.twoColumn,
           showChangeStyleIcon: true,
-          firstChild: const MyChild(text: 'first child', color: Colors.green),
-          secondChild: const MyChild(text: 'second child', color: Colors.blue),
-          thirdChild: const MyChild(text: 'third child', color: Colors.red),
-          fourthChild:
-              const MyChild(text: 'fourth child', color: Colors.yellow),
-          fifthChild: const MyChild(text: 'fifth child', color: Colors.pink),
-          sixthChild: const MyChild(text: 'sixth child', color: Colors.brown),
+          title: const MyChild(
+              width: 200, text: 'THIS IS TITLE', color: Colors.amber),
+          firstChild: const MyChild(text: 'Child 1', color: Colors.green),
+          secondChild: const MyChild(text: 'Child 2', color: Colors.blue),
+          thirdChild: const MyChild(text: 'Child 3', color: Colors.red),
+          fourthChild: const MyChild(text: 'Child 4', color: Colors.yellow),
+          fifthChild: const MyChild(text: 'Child 5', color: Colors.pinkAccent),
+          sixthChild: const MyChild(text: 'Child 6', color: Colors.lightGreen),
         ),
       ),
     );
@@ -38,15 +39,19 @@ class MyChild extends StatelessWidget {
     Key? key,
     required this.color,
     required this.text,
+    this.width = 100,
+    this.height = 50,
   }) : super(key: key);
   final Color color;
   final String text;
+  final double width;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return Container(
       color: color,
-      width: 100,
-      height: 50,
+      width: width,
+      height: height,
       child: Center(
         child: Text(text),
       ),

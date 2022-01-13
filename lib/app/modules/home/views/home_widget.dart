@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:hd_getx_module/app/modules/home/controllers/address_controller.dart';
 
 enum AddressStyle {
-  row,
-  column,
+  oneColumn,
+  twoColumn,
 }
 
 class AddressWidget extends StatelessWidget {
@@ -12,13 +12,14 @@ class AddressWidget extends StatelessWidget {
     Key? key,
     this.width,
     this.height,
+    required this.title,
     required this.firstChild,
     required this.secondChild,
     required this.thirdChild,
     required this.fourthChild,
     required this.fifthChild,
     required this.sixthChild,
-    this.addressStyle = AddressStyle.row,
+    this.addressStyle = AddressStyle.oneColumn,
     this.showChangeStyleIcon = false,
     this.alignment,
     this.padding,
@@ -33,6 +34,7 @@ class AddressWidget extends StatelessWidget {
   }) : super(key: key);
 
   //? customize
+  final Widget title;
   final Widget firstChild;
   final Widget secondChild;
   final Widget thirdChild;
@@ -40,9 +42,7 @@ class AddressWidget extends StatelessWidget {
   final Widget fifthChild;
   final Widget sixthChild;
   final AddressStyle addressStyle;
-
   final bool showChangeStyleIcon;
-
   //? basic container
   final double? width;
   final double? height;
@@ -59,52 +59,57 @@ class AddressWidget extends StatelessWidget {
 
   final controller = Get.put(AddressController());
 
-  Widget _buildChild() {
-    if (controller.addressStyle.value == AddressStyle.row) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              firstChild,
-              secondChild,
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              thirdChild,
-              fourthChild,
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              fifthChild,
-              sixthChild,
-            ],
-          ),
-          (showChangeStyleIcon) ? _changeStyleButton() : const SizedBox(),
-        ],
-      );
-    } else {
-      return Column(
-        children: [
-          firstChild,
-          secondChild,
-          thirdChild,
-          fourthChild,
-          fifthChild,
-          sixthChild,
-          (showChangeStyleIcon) ? _changeStyleButton() : const SizedBox(),
-        ],
-      );
+  Widget buildChild() {
+    switch (controller.addressStyle.value) {
+      case AddressStyle.oneColumn:
+        return _buildLayout(
+            header: title, body: buildOneColumn(), footer: bottomButton());
+      case AddressStyle.twoColumn:
+        return _buildLayout(
+            header: title, body: buildTwoColumn(), footer: bottomButton());
+      default:
+        return const SizedBox();
     }
   }
 
-  Widget _changeStyleButton() {
-    return Expanded(
+  Widget _buildLayout(
+      {required Widget header, required Widget body, required Widget footer}) {
+    return Column(
+      children: [title, body, bottomButton()],
+    );
+  }
+
+  Widget buildOneColumn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            firstChild,
+            secondChild,
+            thirdChild,
+            fourthChild,
+            fifthChild,
+            sixthChild,
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildTwoColumn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Column(children: [firstChild, secondChild, thirdChild]),
+        Column(children: [fourthChild, fifthChild, sixthChild]),
+      ],
+    );
+  }
+
+  Widget bottomButton() {
+    return Visibility(
+      visible: showChangeStyleIcon,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -116,15 +121,8 @@ class AddressWidget extends StatelessWidget {
               width: 60,
               height: 60,
               child: IconButton(
-                onPressed: () {
-                  Get.find<AddressController>().changeStyle();
-                },
-                icon: const Center(
-                  child: Icon(
-                    Icons.change_circle,
-                    size: 40,
-                  ),
-                ),
+                onPressed: () => Get.find<AddressController>().changeStyle(),
+                icon: const Center(child: Icon(Icons.change_circle, size: 40)),
               ),
             ),
           ),
@@ -136,7 +134,7 @@ class AddressWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Container(
-          child: _buildChild(),
+          child: buildChild(),
           width: width,
           height: height,
           alignment: alignment,
