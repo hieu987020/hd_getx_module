@@ -13,21 +13,21 @@ class HomeView extends GetView<HomeController> {
         title: const Text('HomeView'),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: AddressWidget(
           width: 400,
           height: 450,
           color: Colors.grey,
           addressStyle: AddressStyle.twoColumn,
           showChangeStyleIcon: true,
-          title: const MyChild(
-              width: 200, text: 'THIS IS TITLE', color: Colors.amber),
-          firstChild: const MyChild(text: 'Child 1', color: Colors.green),
-          secondChild: const MyChild(text: 'Child 2', color: Colors.blue),
-          thirdChild: const MyChild(text: 'Child 3', color: Colors.red),
-          fourthChild: const MyChild(text: 'Child 4', color: Colors.yellow),
-          fifthChild: const MyChild(text: 'Child 5', color: Colors.pinkAccent),
-          sixthChild: const MyChild(text: 'Child 6', color: Colors.lightGreen),
+          title:
+              MyChild(width: 200, text: 'THIS IS TITLE', color: Colors.amber),
+          firstChild: MyChild(text: 'Child 1', color: Colors.green),
+          secondChild: MyChild(text: 'Child 2', color: Colors.blue),
+          thirdChild: MyChild(text: 'Child 3', color: Colors.red),
+          fourthChild: MyChild(text: 'Child 4', color: Colors.yellow),
+          fifthChild: MyChild(text: 'Child 5', color: Colors.pinkAccent),
+          sixthChild: MyChild(text: 'Child 6', color: Colors.lightGreen),
         ),
       ),
     );

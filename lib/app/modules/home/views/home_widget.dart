@@ -7,9 +7,9 @@ enum AddressStyle {
   twoColumn,
 }
 
-class AddressWidget extends StatelessWidget {
-  AddressWidget({
-    Key? key,
+class AddressWidget extends GetView<AddressController> {
+  // ignore: use_key_in_widget_constructors
+  const AddressWidget({
     this.width,
     this.height,
     required this.title,
@@ -31,7 +31,7 @@ class AddressWidget extends StatelessWidget {
     this.transform,
     this.transformAlignment,
     this.clipBehavior = Clip.none,
-  }) : super(key: key);
+  });
 
   //? customize
   final Widget title;
@@ -57,23 +57,20 @@ class AddressWidget extends StatelessWidget {
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
 
-  final controller = Get.put(AddressController());
+  // final controller = Get.put(AddressController());
 
   Widget buildChild() {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
-        return _buildLayout(
-            header: title, body: buildOneColumn(), footer: bottomButton());
+        return _buildLayout(title, buildOneColumn(), bottomButton());
       case AddressStyle.twoColumn:
-        return _buildLayout(
-            header: title, body: buildTwoColumn(), footer: bottomButton());
+        return _buildLayout(title, buildTwoColumn(), bottomButton());
       default:
         return const SizedBox();
     }
   }
 
-  Widget _buildLayout(
-      {required Widget header, required Widget body, required Widget footer}) {
+  Widget _buildLayout(Widget header, Widget body, Widget footer) {
     return Column(
       children: [title, body, bottomButton()],
     );
