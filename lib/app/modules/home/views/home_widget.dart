@@ -57,9 +57,8 @@ class AddressWidget extends GetView<AddressController> {
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
 
-  // final controller = Get.put(AddressController());
-
   Widget buildChild() {
+    Get.put(AddressController());
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
         return _buildLayout(title, buildOneColumn(), bottomButton());
@@ -77,30 +76,41 @@ class AddressWidget extends GetView<AddressController> {
   }
 
   Widget buildOneColumn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Column(
-          children: [
-            firstChild,
-            secondChild,
-            thirdChild,
-            fourthChild,
-            fifthChild,
-            sixthChild,
-          ],
-        ),
-      ],
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              firstChild,
+              secondChild,
+              thirdChild,
+              fourthChild,
+              fifthChild,
+              sixthChild,
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildTwoColumn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Column(children: [firstChild, secondChild, thirdChild]),
-        Column(children: [fourthChild, fifthChild, sixthChild]),
-      ],
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [firstChild, secondChild, thirdChild],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [fourthChild, fifthChild, sixthChild],
+          ),
+        ],
+      ),
     );
   }
 
