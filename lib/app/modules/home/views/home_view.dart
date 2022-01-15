@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:hd_getx_module/app/modules/home/controllers/home_controller.dart';
-
-import 'package:hd_getx_module/app/modules/home/views/home_widget.dart';
+import 'package:hd_getx_module/app/modules/home/local_widgets/address_widget/address_widget.dart';
 
 // ignore: use_key_in_widget_constructors
 class HomeView extends GetView<HomeController> {

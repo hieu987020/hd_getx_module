@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hd_getx_module/app/modules/home/controllers/address_controller.dart';
+import 'package:hd_getx_module/app/modules/home/local_widgets/address_widget/address_controller.dart';
 
 enum AddressStyle {
   oneColumn,
@@ -58,7 +58,6 @@ class AddressWidget extends GetView<AddressController> {
   final Clip clipBehavior;
 
   Widget buildChild() {
-    Get.put(AddressController());
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
         return _buildLayout(title, buildOneColumn(), bottomButton());
@@ -128,7 +127,7 @@ class AddressWidget extends GetView<AddressController> {
               width: 60,
               height: 60,
               child: IconButton(
-                onPressed: () => Get.find<AddressController>().changeStyle(),
+                onPressed: () => controller.changeStyle(),
                 icon: const Center(child: Icon(Icons.change_circle, size: 40)),
               ),
             ),
@@ -140,6 +139,7 @@ class AddressWidget extends GetView<AddressController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AddressController());
     return Obx(() => Container(
           child: buildChild(),
           width: width,
