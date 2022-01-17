@@ -19,6 +19,7 @@ class AddressWidget extends GetView<AddressController> {
     required this.fourthChild,
     required this.fifthChild,
     required this.sixthChild,
+    this.mainAxisAlignmentRow = MainAxisAlignment.center,
     this.addressStyle = AddressStyle.oneColumn,
     this.showChangeStyleIcon = false,
     this.alignment,
@@ -33,7 +34,7 @@ class AddressWidget extends GetView<AddressController> {
     this.clipBehavior = Clip.none,
   });
 
-  //? customize
+  //? Customize
   final Widget? title;
   final Widget firstChild;
   final Widget secondChild;
@@ -41,9 +42,10 @@ class AddressWidget extends GetView<AddressController> {
   final Widget fourthChild;
   final Widget fifthChild;
   final Widget sixthChild;
+  final MainAxisAlignment mainAxisAlignmentRow;
   final AddressStyle addressStyle;
   final bool showChangeStyleIcon;
-  //? basic container
+  //? Basic Container
   final double? width;
   final double? height;
   final AlignmentGeometry? alignment;
@@ -57,67 +59,41 @@ class AddressWidget extends GetView<AddressController> {
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
 
-  Widget buildChild() {
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        title ?? const SizedBox(),
+      ],
+    );
+  }
+
+  Widget _buildBody() {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
-        return buildLayout(oneColumnStyle());
+        return OneColumnWidget(
+          firstChild: firstChild,
+          secondChild: secondChild,
+          thirdChild: thirdChild,
+          fourthChild: fourthChild,
+          fifthChild: fifthChild,
+          sixthChild: sixthChild,
+        );
       case AddressStyle.twoColumn:
-        return buildLayout(twoColumnStyle());
+        return TwoColumnWidget(
+          firstChild: firstChild,
+          secondChild: secondChild,
+          thirdChild: thirdChild,
+          fourthChild: fourthChild,
+          fifthChild: fifthChild,
+          sixthChild: sixthChild,
+        );
       default:
         return const SizedBox();
     }
   }
 
-  Widget buildLayout(Widget widget) {
-    return Column(
-      children: [
-        title ?? const SizedBox(),
-        widget,
-        changeStyleButton(),
-      ],
-    );
-  }
-
-  Widget oneColumnStyle() {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              firstChild,
-              secondChild,
-              thirdChild,
-              fourthChild,
-              fifthChild,
-              sixthChild,
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget twoColumnStyle() {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [firstChild, secondChild, thirdChild],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [fourthChild, fifthChild, sixthChild],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget changeStyleButton() {
+  Widget _buildFooter() {
     return Visibility(
       visible: showChangeStyleIcon,
       child: Row(
@@ -144,9 +120,9 @@ class AddressWidget extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController());
+
     return Obx(
       () => Container(
-        child: buildChild(),
         width: width,
         height: height,
         alignment: alignment,
@@ -159,6 +135,93 @@ class AddressWidget extends GetView<AddressController> {
         transform: transform,
         transformAlignment: transformAlignment,
         clipBehavior: clipBehavior,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildHeader(),
+            _buildBody(),
+            _buildFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TwoColumnWidget extends StatelessWidget {
+  const TwoColumnWidget({
+    Key? key,
+    required this.firstChild,
+    required this.secondChild,
+    required this.thirdChild,
+    required this.fourthChild,
+    required this.fifthChild,
+    required this.sixthChild,
+  }) : super(key: key);
+
+  final Widget firstChild;
+  final Widget secondChild;
+  final Widget thirdChild;
+  final Widget fourthChild;
+  final Widget fifthChild;
+  final Widget sixthChild;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [firstChild, secondChild, thirdChild],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [fourthChild, fifthChild, sixthChild],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class OneColumnWidget extends StatelessWidget {
+  const OneColumnWidget({
+    Key? key,
+    required this.firstChild,
+    required this.secondChild,
+    required this.thirdChild,
+    required this.fourthChild,
+    required this.fifthChild,
+    required this.sixthChild,
+  }) : super(key: key);
+
+  final Widget firstChild;
+  final Widget secondChild;
+  final Widget thirdChild;
+  final Widget fourthChild;
+  final Widget fifthChild;
+  final Widget sixthChild;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              firstChild,
+              secondChild,
+              thirdChild,
+              fourthChild,
+              fifthChild,
+              sixthChild,
+            ],
+          ),
+        ],
       ),
     );
   }
