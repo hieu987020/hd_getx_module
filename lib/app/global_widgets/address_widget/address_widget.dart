@@ -19,6 +19,7 @@ class AddressWidget extends GetView<AddressController> {
     required this.fourthChild,
     required this.fifthChild,
     required this.sixthChild,
+    this.child,
     this.mainAxisAlignmentRow = MainAxisAlignment.center,
     this.addressStyle = AddressStyle.oneColumn,
     this.showChangeStyleIcon = false,
@@ -42,6 +43,7 @@ class AddressWidget extends GetView<AddressController> {
   final Widget fourthChild;
   final Widget fifthChild;
   final Widget sixthChild;
+  final List<Widget>? child;
   final MainAxisAlignment mainAxisAlignmentRow;
   final AddressStyle addressStyle;
   final bool showChangeStyleIcon;
@@ -120,31 +122,28 @@ class AddressWidget extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController());
-
-    return Obx(
-      () => Container(
-        width: width,
-        height: height,
-        alignment: alignment,
-        padding: padding,
-        color: color,
-        decoration: decoration,
-        foregroundDecoration: foregroundDecoration,
-        constraints: constraints,
-        margin: margin,
-        transform: transform,
-        transformAlignment: transformAlignment,
-        clipBehavior: clipBehavior,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildHeader(),
-            _buildBody(),
-            _buildFooter(),
-          ],
-        ),
-      ),
-    );
+    return Obx(() => Container(
+          width: width,
+          height: height,
+          alignment: alignment,
+          padding: padding,
+          color: color,
+          decoration: decoration,
+          foregroundDecoration: foregroundDecoration,
+          constraints: constraints,
+          margin: margin,
+          transform: transform,
+          transformAlignment: transformAlignment,
+          clipBehavior: clipBehavior,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildHeader(),
+              _buildBody(),
+              _buildFooter(),
+            ],
+          ),
+        ));
   }
 }
 
