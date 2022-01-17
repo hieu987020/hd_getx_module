@@ -13,12 +13,6 @@ class AddressWidget extends GetView<AddressController> {
     this.width,
     this.height,
     this.title,
-    required this.firstChild,
-    required this.secondChild,
-    required this.thirdChild,
-    required this.fourthChild,
-    required this.fifthChild,
-    required this.sixthChild,
     this.child,
     this.mainAxisAlignmentRow = MainAxisAlignment.center,
     this.addressStyle = AddressStyle.oneColumn,
@@ -37,12 +31,6 @@ class AddressWidget extends GetView<AddressController> {
 
   //? Customize
   final Widget? title;
-  final Widget firstChild;
-  final Widget secondChild;
-  final Widget thirdChild;
-  final Widget fourthChild;
-  final Widget fifthChild;
-  final Widget sixthChild;
   final List<Widget>? child;
   final MainAxisAlignment mainAxisAlignmentRow;
   final AddressStyle addressStyle;
@@ -74,21 +62,11 @@ class AddressWidget extends GetView<AddressController> {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
         return OneColumnWidget(
-          firstChild: firstChild,
-          secondChild: secondChild,
-          thirdChild: thirdChild,
-          fourthChild: fourthChild,
-          fifthChild: fifthChild,
-          sixthChild: sixthChild,
+          child: child ?? [const SizedBox()],
         );
       case AddressStyle.twoColumn:
         return TwoColumnWidget(
-          firstChild: firstChild,
-          secondChild: secondChild,
-          thirdChild: thirdChild,
-          fourthChild: fourthChild,
-          fifthChild: fifthChild,
-          sixthChild: sixthChild,
+          child: child ?? [const SizedBox()],
         );
       default:
         return const SizedBox();
@@ -150,34 +128,36 @@ class AddressWidget extends GetView<AddressController> {
 class TwoColumnWidget extends StatelessWidget {
   const TwoColumnWidget({
     Key? key,
-    required this.firstChild,
-    required this.secondChild,
-    required this.thirdChild,
-    required this.fourthChild,
-    required this.fifthChild,
-    required this.sixthChild,
+    required this.child,
   }) : super(key: key);
 
-  final Widget firstChild;
-  final Widget secondChild;
-  final Widget thirdChild;
-  final Widget fourthChild;
-  final Widget fifthChild;
-  final Widget sixthChild;
+  final List<Widget> child;
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> left = [];
+    List<Widget> right = [];
+    bool isLeft = true;
+    for (var element in child) {
+      if (isLeft) {
+        left.add(element);
+        isLeft = !isLeft;
+      } else {
+        right.add(element);
+        isLeft = !isLeft;
+      }
+    }
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [firstChild, secondChild, thirdChild],
+            children: left,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [fourthChild, fifthChild, sixthChild],
+            children: right,
           ),
         ],
       ),
@@ -188,21 +168,10 @@ class TwoColumnWidget extends StatelessWidget {
 class OneColumnWidget extends StatelessWidget {
   const OneColumnWidget({
     Key? key,
-    required this.firstChild,
-    required this.secondChild,
-    required this.thirdChild,
-    required this.fourthChild,
-    required this.fifthChild,
-    required this.sixthChild,
+    required this.child,
   }) : super(key: key);
 
-  final Widget firstChild;
-  final Widget secondChild;
-  final Widget thirdChild;
-  final Widget fourthChild;
-  final Widget fifthChild;
-  final Widget sixthChild;
-
+  final List<Widget> child;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -211,14 +180,7 @@ class OneColumnWidget extends StatelessWidget {
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              firstChild,
-              secondChild,
-              thirdChild,
-              fourthChild,
-              fifthChild,
-              sixthChild,
-            ],
+            children: child,
           ),
         ],
       ),

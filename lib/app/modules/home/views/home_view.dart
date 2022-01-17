@@ -10,21 +10,45 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('HomeView'), centerTitle: true),
-      body: const Center(
-        child: AddressWidget(
-          width: 400,
-          height: 450,
-          color: Colors.blueGrey,
-          addressStyle: AddressStyle.twoColumn,
-          showChangeStyleIcon: true,
-          title:
-              MyChild(width: 200, text: 'THIS IS TITLE', color: Colors.amber),
-          firstChild: MyChild(text: 'Child 1', color: Colors.green),
-          secondChild: MyChild(text: 'Child 2', color: Colors.blue),
-          thirdChild: MyChild(text: 'Child 3', color: Colors.red),
-          fourthChild: MyChild(text: 'Child 4', color: Colors.yellow),
-          fifthChild: MyChild(text: 'Child 5', color: Colors.pinkAccent),
-          sixthChild: MyChild(text: 'Child 6', color: Colors.lightGreen),
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            SizedBox(height: 50),
+            AddressWidget(
+              width: 400,
+              height: 450,
+              color: Colors.blueGrey,
+              addressStyle: AddressStyle.twoColumn,
+              showChangeStyleIcon: true,
+              title: MyChild(
+                  width: 200, text: 'THIS IS TITLE', color: Colors.amber),
+              child: [
+                MyChild(text: 'Child 1', color: Colors.green),
+                MyChild(text: 'Child 2', color: Colors.blue),
+                MyChild(text: 'Child 3', color: Colors.red),
+                MyChild(text: 'Child 4', color: Colors.yellow),
+                MyChild(text: 'Child 5', color: Colors.pinkAccent),
+                MyChild(text: 'Child 6', color: Colors.lightGreen),
+              ],
+            ),
+            SizedBox(height: 20),
+            AddressWidget(
+              width: 400,
+              height: 450,
+              color: Colors.blueGrey,
+              addressStyle: AddressStyle.twoColumn,
+              showChangeStyleIcon: true,
+              title: MyChild(
+                  width: 200, text: 'THIS IS TITLE', color: Colors.amber),
+              child: [
+                MyChild(text: 'Child 1', color: Colors.green),
+                MyChild(text: 'Child 2', color: Colors.blue),
+                MyChild(text: 'Child 3', color: Colors.red),
+                MyChild(text: 'Child 4', color: Colors.yellow),
+              ],
+            ),
+            SizedBox(height: 200),
+          ],
         ),
       ),
     );
