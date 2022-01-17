@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hd_getx_module/app/modules/home/local_widgets/address_widget/address_controller.dart';
+import 'package:hd_getx_module/app/global_widgets/address_widget/address_controller.dart';
 
 enum AddressStyle {
   oneColumn,
@@ -60,15 +60,15 @@ class AddressWidget extends GetView<AddressController> {
   Widget buildChild() {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
-        return _buildLayout(title, buildOneColumn(), bottomButton());
+        return buildLayout(title, buildOneColumn(), bottomButton());
       case AddressStyle.twoColumn:
-        return _buildLayout(title, buildTwoColumn(), bottomButton());
+        return buildLayout(title, buildTwoColumn(), bottomButton());
       default:
         return const SizedBox();
     }
   }
 
-  Widget _buildLayout(Widget header, Widget body, Widget footer) {
+  Widget buildLayout(Widget header, Widget body, Widget footer) {
     return Column(
       children: [title, body, bottomButton()],
     );

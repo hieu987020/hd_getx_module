@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:hd_getx_module/app/modules/home/local_widgets/address_widget/address_widget.dart';
+import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 
 class AddressController extends GetxController {
   final addressStyle = AddressStyle.oneColumn.obs;
