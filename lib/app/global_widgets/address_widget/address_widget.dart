@@ -12,7 +12,7 @@ class AddressWidget extends GetView<AddressController> {
   const AddressWidget({
     this.width,
     this.height,
-    required this.title,
+    this.title,
     required this.firstChild,
     required this.secondChild,
     required this.thirdChild,
@@ -34,7 +34,7 @@ class AddressWidget extends GetView<AddressController> {
   });
 
   //? customize
-  final Widget title;
+  final Widget? title;
   final Widget firstChild;
   final Widget secondChild;
   final Widget thirdChild;
@@ -60,21 +60,25 @@ class AddressWidget extends GetView<AddressController> {
   Widget buildChild() {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
-        return buildLayout(title, buildOneColumn(), bottomButton());
+        return buildLayout(oneColumnStyle());
       case AddressStyle.twoColumn:
-        return buildLayout(title, buildTwoColumn(), bottomButton());
+        return buildLayout(twoColumnStyle());
       default:
         return const SizedBox();
     }
   }
 
-  Widget buildLayout(Widget header, Widget body, Widget footer) {
+  Widget buildLayout(Widget widget) {
     return Column(
-      children: [title, body, bottomButton()],
+      children: [
+        title ?? const SizedBox(),
+        widget,
+        changeStyleButton(),
+      ],
     );
   }
 
-  Widget buildOneColumn() {
+  Widget oneColumnStyle() {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +99,7 @@ class AddressWidget extends GetView<AddressController> {
     );
   }
 
-  Widget buildTwoColumn() {
+  Widget twoColumnStyle() {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -113,7 +117,7 @@ class AddressWidget extends GetView<AddressController> {
     );
   }
 
-  Widget bottomButton() {
+  Widget changeStyleButton() {
     return Visibility(
       visible: showChangeStyleIcon,
       child: Row(
@@ -140,20 +144,22 @@ class AddressWidget extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController());
-    return Obx(() => Container(
-          child: buildChild(),
-          width: width,
-          height: height,
-          alignment: alignment,
-          padding: padding,
-          color: color,
-          decoration: decoration,
-          foregroundDecoration: foregroundDecoration,
-          constraints: constraints,
-          margin: margin,
-          transform: transform,
-          transformAlignment: transformAlignment,
-          clipBehavior: clipBehavior,
-        ));
+    return Obx(
+      () => Container(
+        child: buildChild(),
+        width: width,
+        height: height,
+        alignment: alignment,
+        padding: padding,
+        color: color,
+        decoration: decoration,
+        foregroundDecoration: foregroundDecoration,
+        constraints: constraints,
+        margin: margin,
+        transform: transform,
+        transformAlignment: transformAlignment,
+        clipBehavior: clipBehavior,
+      ),
+    );
   }
 }
