@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 import 'package:hd_getx_module/app/modules/home/controllers/home_controller.dart';
 import 'package:hd_getx_module/app/modules/home/local_widgets/color_containers/my_child.dart';
@@ -47,6 +47,7 @@ class HomeView extends GetView<HomeController> {
               showChangeStyleIcon: true,
               title: buildTitle(),
               child: buildChild1(),
+              tagController: 'tag1',
             ),
             const SizedBox(height: 20),
             AddressWidget(
@@ -54,9 +55,10 @@ class HomeView extends GetView<HomeController> {
               height: 350,
               color: Colors.blueGrey,
               addressStyle: AddressStyle.twoColumn,
-              showChangeStyleIcon: false,
+              showChangeStyleIcon: true,
               title: buildTitle(),
               child: buildChild2(),
+              tagController: 'tag2',
             ),
             const SizedBox(height: 200),
           ],

@@ -17,6 +17,7 @@ class AddressWidget extends GetView<AddressController> {
     this.mainAxisAlignmentRow = MainAxisAlignment.center,
     this.addressStyle = AddressStyle.oneColumn,
     this.showChangeStyleIcon = false,
+    this.tagController,
     this.alignment,
     this.padding,
     this.color,
@@ -35,6 +36,7 @@ class AddressWidget extends GetView<AddressController> {
   final MainAxisAlignment mainAxisAlignmentRow;
   final AddressStyle addressStyle;
   final bool showChangeStyleIcon;
+  final String? tagController;
   //? Basic Container
   final double? width;
   final double? height;
@@ -48,6 +50,10 @@ class AddressWidget extends GetView<AddressController> {
   final Matrix4? transform;
   final AlignmentGeometry? transformAlignment;
   final Clip clipBehavior;
+
+  @override
+  // ignore: overridden_fields
+  String? get tag => tagController;
 
   Widget _buildHeader() {
     return Row(
@@ -88,6 +94,7 @@ class AddressWidget extends GetView<AddressController> {
               height: 60,
               child: IconButton(
                 onPressed: () => controller.changeStyle(),
+                // controller.changeStyle()
                 icon: const Center(child: Icon(Icons.change_circle, size: 40)),
               ),
             ),
@@ -99,29 +106,60 @@ class AddressWidget extends GetView<AddressController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AddressController());
-    return Obx(() => Container(
-          width: width,
-          height: height,
-          alignment: alignment,
-          padding: padding,
-          color: color,
-          decoration: decoration,
-          foregroundDecoration: foregroundDecoration,
-          constraints: constraints,
-          margin: margin,
-          transform: transform,
-          transformAlignment: transformAlignment,
-          clipBehavior: clipBehavior,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildHeader(),
-              _buildBody(),
-              _buildFooter(),
-            ],
-          ),
-        ));
+    // Get.put(AddressController());
+    Get.put(AddressController(), tag: tagController);
+    return Obx(
+      () => Container(
+        width: width,
+        height: height,
+        alignment: alignment,
+        padding: padding,
+        color: color,
+        decoration: decoration,
+        foregroundDecoration: foregroundDecoration,
+        constraints: constraints,
+        margin: margin,
+        transform: transform,
+        transformAlignment: transformAlignment,
+        clipBehavior: clipBehavior,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildHeader(),
+            _buildBody(),
+            _buildFooter(),
+          ],
+        ),
+      ),
+    );
+    // return GetX<AddressController>(
+    //   tag: tagController,
+
+    //   builder: (_) {
+    //     return Container(
+    //       width: width,
+    //       height: height,
+    //       alignment: alignment,
+    //       padding: padding,
+    //       color: color,
+    //       decoration: decoration,
+    //       foregroundDecoration: foregroundDecoration,
+    //       constraints: constraints,
+    //       margin: margin,
+    //       transform: transform,
+    //       transformAlignment: transformAlignment,
+    //       clipBehavior: clipBehavior,
+    //       child: Column(
+    //         crossAxisAlignment: CrossAxisAlignment.center,
+    //         children: [
+    //           _buildHeader(),
+    //           _buildBody(),
+    //           _buildFooter(),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }
 
