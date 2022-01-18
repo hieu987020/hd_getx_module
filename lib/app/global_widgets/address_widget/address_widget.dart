@@ -9,7 +9,7 @@ enum AddressStyle {
 
 class AddressWidget extends GetView<AddressController> {
   // ignore: use_key_in_widget_constructors
-  const AddressWidget({
+  AddressWidget({
     this.width,
     this.height,
     this.title,
@@ -64,16 +64,120 @@ class AddressWidget extends GetView<AddressController> {
     );
   }
 
+  Container streetTextfield = Container(
+    margin: const EdgeInsets.all(5),
+    width: 120,
+    child: const TextField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Số nhà/Tên đường',
+      ),
+    ),
+  );
+  Container postCodeTextfield = Container(
+    margin: const EdgeInsets.all(5),
+    width: 120,
+    child: const TextField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Nhập mã địa lý hành chính',
+      ),
+    ),
+  );
+
+  String? initialValue;
+  Obx cityDropdown() {
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.all(5),
+        child: DropdownButton(
+          hint: const Text('Lựa chọn Tỉnh/ Thành Phố'),
+          value: controller.selectedCity.value == ''
+              ? initialValue
+              : controller.selectedCity.value,
+          onChanged: (String? newValue) {
+            controller.selectedCity(newValue);
+            controller.fetchDistricts();
+            controller.selectedDistrict('');
+          },
+          items:
+              controller.listCity.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Obx districtDropdown() {
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.all(5),
+        child: DropdownButton(
+          hint: const Text('Lựa chọn Quận/Huyện'),
+          value: controller.selectedDistrict.value == ''
+              ? initialValue
+              : controller.selectedDistrict.value,
+          onChanged: (String? newValue) {
+            controller.selectedDistrict(newValue);
+          },
+          items: controller.listDistrict
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody() {
     switch (controller.addressStyle.value) {
       case AddressStyle.oneColumn:
-        return OneColumnWidget(
-          child: child ?? [const SizedBox()],
+        return Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  streetTextfield,
+                  postCodeTextfield,
+                  cityDropdown(),
+                  districtDropdown(),
+                ],
+              ),
+            ],
+          ),
         );
       case AddressStyle.twoColumn:
-        return TwoColumnWidget(
-          child: child ?? [const SizedBox()],
+        return Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  streetTextfield,
+                  postCodeTextfield,
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  cityDropdown(),
+                  districtDropdown(),
+                ],
+              ),
+            ],
+          ),
         );
+
       default:
         return const SizedBox();
     }
@@ -86,18 +190,11 @@ class AddressWidget extends GetView<AddressController> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              color: Colors.white,
-              width: 60,
-              height: 60,
-              child: IconButton(
-                onPressed: () => controller.changeStyle(),
-                // controller.changeStyle()
-                icon: const Center(child: Icon(Icons.change_circle, size: 40)),
-              ),
-            ),
+          IconButton(
+            iconSize: 40,
+            onPressed: () => controller.changeStyle(),
+            // controller.changeStyle()
+            icon: const Icon(Icons.change_circle),
           ),
         ],
       ),
@@ -106,8 +203,8 @@ class AddressWidget extends GetView<AddressController> {
 
   @override
   Widget build(BuildContext context) {
-    // Get.put(AddressController());
     Get.put(AddressController(), tag: tagController);
+    controller.initNow();
     return Obx(
       () => Container(
         width: width,
@@ -130,97 +227,6 @@ class AddressWidget extends GetView<AddressController> {
             _buildFooter(),
           ],
         ),
-      ),
-    );
-    // return GetX<AddressController>(
-    //   tag: tagController,
-
-    //   builder: (_) {
-    //     return Container(
-    //       width: width,
-    //       height: height,
-    //       alignment: alignment,
-    //       padding: padding,
-    //       color: color,
-    //       decoration: decoration,
-    //       foregroundDecoration: foregroundDecoration,
-    //       constraints: constraints,
-    //       margin: margin,
-    //       transform: transform,
-    //       transformAlignment: transformAlignment,
-    //       clipBehavior: clipBehavior,
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.center,
-    //         children: [
-    //           _buildHeader(),
-    //           _buildBody(),
-    //           _buildFooter(),
-    //         ],
-    //       ),
-    //     );
-    //   },
-    // );
-  }
-}
-
-class TwoColumnWidget extends StatelessWidget {
-  const TwoColumnWidget({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  final List<Widget> child;
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> left = [];
-    List<Widget> right = [];
-    bool isLeft = true;
-    for (var element in child) {
-      if (isLeft) {
-        left.add(element);
-        isLeft = !isLeft;
-      } else {
-        right.add(element);
-        isLeft = !isLeft;
-      }
-    }
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: left,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: right,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OneColumnWidget extends StatelessWidget {
-  const OneColumnWidget({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  final List<Widget> child;
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: child,
-          ),
-        ],
       ),
     );
   }

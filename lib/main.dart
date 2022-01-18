@@ -11,6 +11,7 @@ void main() {
       debugShowCheckedModeBanner: false,
       getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
+      theme: ThemeData.dark(),
     ),
   );
 }
