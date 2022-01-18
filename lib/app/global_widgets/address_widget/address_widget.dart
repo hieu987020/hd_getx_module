@@ -92,13 +92,9 @@ class AddressWidget extends GetView<AddressController> {
         margin: const EdgeInsets.all(5),
         child: DropdownButton(
           hint: const Text('Lựa chọn Tỉnh/ Thành Phố'),
-          value: controller.selectedCity.value == ''
-              ? initialValue
-              : controller.selectedCity.value,
+          value: controller.selectedCity.value,
           onChanged: (String? newValue) {
-            controller.selectedCity(newValue);
-            controller.fetchDistricts();
-            controller.selectedDistrict('');
+            controller.cityOnChange(newValue);
           },
           items:
               controller.listCity.map<DropdownMenuItem<String>>((String value) {
@@ -118,11 +114,9 @@ class AddressWidget extends GetView<AddressController> {
         margin: const EdgeInsets.all(5),
         child: DropdownButton(
           hint: const Text('Lựa chọn Quận/Huyện'),
-          value: controller.selectedDistrict.value == ''
-              ? initialValue
-              : controller.selectedDistrict.value,
+          value: controller.selectedDistrict.value,
           onChanged: (String? newValue) {
-            controller.selectedDistrict(newValue);
+            controller.districtOnChange(newValue);
           },
           items: controller.listDistrict
               .map<DropdownMenuItem<String>>((String value) {
@@ -204,7 +198,7 @@ class AddressWidget extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
-    controller.initNow();
+    controller.initNow(addressStyle);
     return Obx(
       () => Container(
         width: width,

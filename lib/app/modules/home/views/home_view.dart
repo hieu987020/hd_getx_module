@@ -19,7 +19,7 @@ class HomeView extends GetView<HomeController> {
                 width: 400,
                 height: 450,
                 color: Colors.grey[800],
-                addressStyle: AddressStyle.twoColumn,
+                addressStyle: AddressStyle.oneColumn,
                 showChangeStyleIcon: true,
                 title: const MyChild(text: 'THIS IS TITLE'),
                 tagController: 'tag1',

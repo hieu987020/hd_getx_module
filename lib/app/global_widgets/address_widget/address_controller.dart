@@ -1,51 +1,57 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 
 class AddressController extends GetxController {
-  final addressStyle = AddressStyle.oneColumn.obs;
-  final listCity = [''].obs;
-  final listDistrict = [''].obs;
-  final selectedCity = ''.obs;
-  final selectedDistrict = ''.obs;
+  final addressStyle = Rxn<AddressStyle>();
+  final listCity = RxList<String>();
+  final listDistrict = RxList<String>();
+  final selectedCity = RxnString();
+  final selectedDistrict = RxnString();
 
-  void changeStyle() {
-    debugPrint('helloooooooooooooo');
-    if (addressStyle.value == AddressStyle.oneColumn) {
-      addressStyle(AddressStyle.twoColumn);
-    } else {
-      addressStyle(AddressStyle.oneColumn);
+  // get addressStyle => _addressStyle.value;
+  // set addressStyle(value) => _addressStyle.value = value;
+
+  changeStyle() {
+    switch (addressStyle.value) {
+      case AddressStyle.oneColumn:
+        addressStyle(AddressStyle.twoColumn);
+        break;
+      case AddressStyle.twoColumn:
+        addressStyle(AddressStyle.oneColumn);
+        break;
+      default:
     }
   }
 
-  void fetchCities() {
-    var list = ['Hồ Chí Minh', 'Hà Nội'];
-    listCity(list);
+  void cityOnChange(String? newValue) {
+    String? nullVal;
+    selectedCity(newValue);
+    selectedDistrict(null);
+    fetchDistricts();
+    print(selectedDistrict.value);
   }
 
-  void setSelectedCity(String value) {
-    selectedCity(value);
+  void districtOnChange(String? newValue) {
+    selectedDistrict(newValue);
   }
+
+  void fetchCities() => listCity(['Hồ Chí Minh', 'Hà Nội']);
 
   void fetchDistricts() {
-    var list = [''];
-    if (selectedCity.value == 'Hồ Chí Minh') {
-      list = ['Quận 1', 'Quận 2'];
-    } else {
-      list = ['Quận Hoàn Kiếm', 'Quận Ba Đình'];
+    List<String>? list;
+    switch (selectedCity.value) {
+      case 'Hồ Chí Minh':
+        list = ['Quận 1', 'Quận 2'];
+        break;
+      case 'Hà Nội':
+        list = ['Quận Hoàn Kiếm', 'Quận Ba Đình'];
+        break;
     }
     listDistrict(list);
   }
 
-  void setSelectedDistrict(String value) {
-    selectedDistrict(value);
-  }
-
-  void initNow() {
+  void initNow(AddressStyle value) {
+    addressStyle(value);
     fetchCities();
-    selectedCity(null);
-    // print('Init ne');
-    // print(listCity.value);
-    // print(selectedCity.value);
   }
 }
