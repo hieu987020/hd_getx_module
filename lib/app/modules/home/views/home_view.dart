@@ -16,8 +16,8 @@ class HomeView extends GetView<HomeController> {
             children: [
               const SizedBox(height: 50),
               AddressWidget(
-                width: 600,
-                height: 450,
+                width: 400,
+                height: 550,
                 color: Colors.grey[800],
                 addressStyle: AddressStyle.oneColumn,
                 showChangeStyleIcon: true,

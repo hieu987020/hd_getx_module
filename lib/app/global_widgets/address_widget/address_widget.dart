@@ -13,6 +13,8 @@ class _DefaultText {
   static const String postCodeLabel = "Nhập mã địa lý hành chính";
   static const String cityLabel = "Lựa chọn Tỉnh/ Thành Phố";
   static const String districtLabel = "Lựa chọn Quận/Huyện";
+  static const String wardLabel = "Lựa chọn Xã/Phường/Thị trấn";
+  static const String townLabel = "Lựa chọn Thôn/Ấp/Khu phố";
 }
 
 class AddressWidget extends GetView<AddressController> {
@@ -66,17 +68,6 @@ class AddressWidget extends GetView<AddressController> {
     Get.put(AddressController(), tag: tagController);
     controller.initNow(addressStyle);
     const EdgeInsets defaultMargin = EdgeInsets.all(5);
-    Widget header = Container(
-      margin: defaultMargin,
-      child: const Text(
-        _DefaultText.titleLabel,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 26,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
 
     Container streetTextfield = Container(
       margin: defaultMargin,
@@ -100,57 +91,88 @@ class AddressWidget extends GetView<AddressController> {
       ),
     );
 
-    Obx cityDropdown = Obx(
-      () => Container(
-        width: 220,
+    String? initialValue;
+    Obx cityDropdown = Obx(() {
+      return _AddressTextfield(
         margin: defaultMargin,
-        child: DropdownButtonFormField(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          isExpanded: true,
-          hint: const Text(_DefaultText.cityLabel),
-          value: controller.selectedCity.value,
-          onChanged: (String? newValue) {
-            controller.cityOnChange(newValue);
-          },
-          items:
-              controller.listCity.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
-    );
+        hintText: _DefaultText.cityLabel,
+        value: controller.selectedCity.value == ''
+            ? initialValue
+            : controller.selectedCity.value,
+        onChanged: (Object? newValue) {
+          controller.cityOnChange(newValue.toString());
+        },
+        items:
+            controller.listCity.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      );
+    });
 
-    Obx districtDropdown = Obx(
-      () => Container(
-        width: 220,
+    Obx districtDropdown = Obx(() {
+      return _AddressTextfield(
         margin: defaultMargin,
-        child: DropdownButtonFormField(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          isExpanded: true,
-          hint: const Text(_DefaultText.districtLabel),
-          value: controller.selectedDistrict.value,
-          onChanged: (String? newValue) {
-            controller.districtOnChange(newValue);
-          },
-          items: controller.listDistrict
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
-    );
+        hintText: _DefaultText.districtLabel,
+        value: controller.selectedDistrict.value == ''
+            ? initialValue
+            : controller.selectedDistrict.value,
+        onChanged: (Object? newValue) {
+          controller.districtOnChange(newValue.toString());
+        },
+        items: controller.listDistrict
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      );
+    });
 
-    Widget oneColumnStyle = Expanded(
+    Obx wardDropdown = Obx(() {
+      return _AddressTextfield(
+        margin: defaultMargin,
+        hintText: _DefaultText.wardLabel,
+        value: controller.selectedWard.value == ''
+            ? initialValue
+            : controller.selectedWard.value,
+        onChanged: (Object? newValue) {
+          controller.wardOnChange(newValue.toString());
+        },
+        items:
+            controller.listWard.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      );
+    });
+
+    Obx townDropdown = Obx(() {
+      return _AddressTextfield(
+        margin: defaultMargin,
+        hintText: _DefaultText.townLabel,
+        value: controller.selectedTown.value == ''
+            ? initialValue
+            : controller.selectedTown.value,
+        onChanged: (Object? newValue) {
+          controller.townOnChange(newValue.toString());
+        },
+        items:
+            controller.listTown.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      );
+    });
+
+    Expanded oneColumnStyle = Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -161,12 +183,15 @@ class AddressWidget extends GetView<AddressController> {
               postCodeTextfield,
               cityDropdown,
               districtDropdown,
+              wardDropdown,
+              townDropdown,
             ],
           ),
         ],
       ),
     );
-    Widget twoColumnStyle = Expanded(
+
+    Expanded twoColumnStyle = Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -187,8 +212,21 @@ class AddressWidget extends GetView<AddressController> {
         ],
       ),
     );
+
+    Container header = Container(
+      margin: defaultMargin,
+      child: const Text(
+        _DefaultText.titleLabel,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+
     Obx body = Obx(() {
-      switch (controller.addressStyle.value!) {
+      switch (controller.addressStyle.value) {
         case AddressStyle.oneColumn:
           return oneColumnStyle;
         case AddressStyle.twoColumn:
@@ -196,7 +234,7 @@ class AddressWidget extends GetView<AddressController> {
       }
     });
 
-    Widget footer = Visibility(
+    Visibility footer = Visibility(
       visible: showChangeStyleIcon,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -210,6 +248,7 @@ class AddressWidget extends GetView<AddressController> {
         ],
       ),
     );
+
     return Container(
       width: width,
       height: height,
@@ -234,3 +273,86 @@ class AddressWidget extends GetView<AddressController> {
     );
   }
 }
+
+class _AddressTextfield extends StatelessWidget {
+  const _AddressTextfield({
+    Key? key,
+    this.margin,
+    required this.hintText,
+    this.value,
+    this.onChanged,
+    required this.items,
+  }) : super(key: key);
+
+  final EdgeInsetsGeometry? margin;
+  final String hintText;
+  final Object? value;
+  final void Function(Object?)? onChanged;
+  final List<DropdownMenuItem<Object>>? items;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 240,
+      margin: margin,
+      child: DropdownButtonFormField(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+        isExpanded: true,
+        hint: Text(hintText),
+        value: value,
+        onChanged: onChanged,
+        items: items,
+      ),
+    );
+  }
+}
+// Obx cityDropdown = Obx(
+//       () => Container(
+//         width: 220,
+//         margin: defaultMargin,
+//         child: DropdownButtonFormField(
+//           decoration: const InputDecoration(
+//             border: OutlineInputBorder(),
+//           ),
+//           isExpanded: true,
+//           hint: const Text(_DefaultText.cityLabel),
+//           value: controller.selectedCity.value,
+//           onChanged: (String? newValue) {
+//             controller.cityOnChange(newValue);
+//           },
+//           items:
+//               controller.listCity.map<DropdownMenuItem<String>>((String value) {
+//             return DropdownMenuItem<String>(
+//               value: value,
+//               child: Text(value),
+//             );
+//           }).toList(),
+//         ),
+//       ),
+//     );
+
+//     Obx districtDropdown = Obx(
+//       () => Container(
+//         width: 220,
+//         margin: defaultMargin,
+//         child: DropdownButtonFormField(
+//           decoration: const InputDecoration(
+//             border: OutlineInputBorder(),
+//           ),
+//           isExpanded: true,
+//           hint: const Text(_DefaultText.districtLabel),
+//           value: controller.selectedDistrict.value,
+//           onChanged: (String? newValue) {
+//             controller.districtOnChange(newValue);
+//           },
+//           items: controller.listDistrict
+//               .map<DropdownMenuItem<String>>((String value) {
+//             return DropdownMenuItem<String>(
+//               value: value,
+//               child: Text(value),
+//             );
+//           }).toList(),
+//         ),
+//       ),
+//     );
