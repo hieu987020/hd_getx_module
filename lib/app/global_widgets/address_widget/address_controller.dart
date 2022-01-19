@@ -31,8 +31,8 @@ class AddressController extends GetxController {
     selectedWard('');
     selectedTown('');
     fetchDistricts();
-    // listWard.value = RxList<String>();
-    // listTown.value = RxList<String>();
+    listWard.value = RxList<String>();
+    listTown.value = RxList<String>();
   }
 
   void districtOnChange(String? newValue) {
@@ -40,7 +40,7 @@ class AddressController extends GetxController {
     selectedWard('');
     selectedTown('');
     fetchWards();
-    // listTown.value = RxList<String>();
+    listTown.value = RxList<String>();
   }
 
   void wardOnChange(String? newValue) {
@@ -56,42 +56,42 @@ class AddressController extends GetxController {
   void fetchCities() => listCity(['Hồ Chí Minh', 'Hà Nội']);
 
   void fetchDistricts() {
-    List<String>? list;
     switch (selectedCity.value) {
       case 'Hồ Chí Minh':
-        list = ['Quận 1'];
+        listDistrict(['Quận 1', 'Quận 2']);
         break;
       case 'Hà Nội':
-        list = ['Quận Hoàn Kiếm'];
+        listDistrict(['Quận Hoàn Kiếm', 'Quận Đống Đa']);
         break;
+      default:
+        listDistrict(RxList<String>());
     }
-    listDistrict(list);
   }
 
   void fetchWards() {
-    List<String>? list;
     switch (selectedDistrict.value) {
       case 'Quận 1':
-        list = ['Phường 1'];
+        listWard(['Phường 1', 'Phường 2']);
         break;
       case 'Quận Hoàn Kiếm':
-        list = ['Phường Hoàn Kiếm'];
+        listWard(['Phường Hoàn Kiếm', 'Phường Đống Đa']);
         break;
+      default:
+        listWard(RxList<String>());
     }
-    listWard(list);
   }
 
   void fetchTowns() {
-    List<String>? list;
     switch (selectedWard.value) {
       case 'Phường 1':
-        list = ['Khu phố 1'];
+        listTown(['Khu phố 1', 'Khu phố 2']);
         break;
       case 'Phường Hoàn Kiếm':
-        list = ['Khu phố Hoàn Kiếm'];
+        listTown(['Khu phố Hoàn Kiếm', 'Khu phố Đống Đa']);
         break;
+      default:
+        listTown(RxList<String>());
     }
-    listTown(list);
   }
 
   void getOuput() {

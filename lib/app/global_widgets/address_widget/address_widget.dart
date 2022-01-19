@@ -9,7 +9,7 @@ enum AddressStyle {
 
 class _DefaultText {
   static const String titleLabel = "Thông tin người liên hệ";
-  static const String streetLabel = "Số nhà/Tên đường";
+  static const String streetLabel = "Nhập Số nhà/Tên đường";
   static const String postCodeLabel = "Nhập mã địa lý hành chính";
   static const String cityLabel = "Lựa chọn Tỉnh/ Thành Phố";
   static const String districtLabel = "Lựa chọn Quận/Huyện";
@@ -25,6 +25,7 @@ class AddressWidget extends GetView<AddressController> {
     this.showChangeStyleIcon = false,
     this.tagController,
     required this.jsonOutput,
+    this.childPadding = const EdgeInsets.all(5),
     //? Basic Container
     this.width,
     this.height,
@@ -45,6 +46,7 @@ class AddressWidget extends GetView<AddressController> {
   final bool showChangeStyleIcon;
   final String? tagController;
   final TextEditingController jsonOutput;
+  final EdgeInsetsGeometry? childPadding;
   //? Basic Container
   final double? width;
   final double? height;
@@ -67,11 +69,11 @@ class AddressWidget extends GetView<AddressController> {
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
     controller.initNow(addressStyle);
-    const EdgeInsets defaultMargin = EdgeInsets.all(5);
+    // const EdgeInsets defaultMargin = EdgeInsets.all(5);
 
     Container streetTextfield = Container(
-      margin: defaultMargin,
-      width: 220,
+      margin: childPadding,
+      width: 260,
       child: const TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -81,8 +83,8 @@ class AddressWidget extends GetView<AddressController> {
     );
 
     Container postCodeTextfield = Container(
-      margin: defaultMargin,
-      width: 220,
+      margin: childPadding,
+      width: 260,
       child: const TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -91,10 +93,25 @@ class AddressWidget extends GetView<AddressController> {
       ),
     );
 
+    // Obx exam = Obx(() {
+    //   return AutocompleteBasicExample(
+    //     list: controller.listCity,
+    //   );
+    // });
+    // Widget exam = AutocompleteBasicExample(
+    //   list: [
+    //     'Hồ Chí Minh',
+    //     'Hà Nội',
+    //     'Đà Nẵng',
+    //   ],
+    // );
+    // Widget exam = AutocompleteBasicExample(
+    //   list: controller.listCity,
+    // );
     String? initialValue;
     Obx cityDropdown = Obx(() {
       return _AddressTextfield(
-        margin: defaultMargin,
+        margin: childPadding,
         hintText: _DefaultText.cityLabel,
         value: controller.selectedCity.value == ''
             ? initialValue
@@ -114,7 +131,7 @@ class AddressWidget extends GetView<AddressController> {
 
     Obx districtDropdown = Obx(() {
       return _AddressTextfield(
-        margin: defaultMargin,
+        margin: childPadding,
         hintText: _DefaultText.districtLabel,
         value: controller.selectedDistrict.value == ''
             ? initialValue
@@ -134,7 +151,7 @@ class AddressWidget extends GetView<AddressController> {
 
     Obx wardDropdown = Obx(() {
       return _AddressTextfield(
-        margin: defaultMargin,
+        margin: childPadding,
         hintText: _DefaultText.wardLabel,
         value: controller.selectedWard.value == ''
             ? initialValue
@@ -154,7 +171,7 @@ class AddressWidget extends GetView<AddressController> {
 
     Obx townDropdown = Obx(() {
       return _AddressTextfield(
-        margin: defaultMargin,
+        margin: childPadding,
         hintText: _DefaultText.townLabel,
         value: controller.selectedTown.value == ''
             ? initialValue
@@ -182,6 +199,7 @@ class AddressWidget extends GetView<AddressController> {
               streetTextfield,
               postCodeTextfield,
               cityDropdown,
+              // exam,
               districtDropdown,
               wardDropdown,
               townDropdown,
@@ -200,13 +218,15 @@ class AddressWidget extends GetView<AddressController> {
             children: [
               streetTextfield,
               postCodeTextfield,
+              cityDropdown,
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              cityDropdown,
               districtDropdown,
+              wardDropdown,
+              townDropdown,
             ],
           ),
         ],
@@ -214,7 +234,7 @@ class AddressWidget extends GetView<AddressController> {
     );
 
     Container header = Container(
-      margin: defaultMargin,
+      margin: childPadding,
       child: const Text(
         _DefaultText.titleLabel,
         textAlign: TextAlign.center,
@@ -242,7 +262,10 @@ class AddressWidget extends GetView<AddressController> {
         children: [
           IconButton(
             iconSize: 40,
-            onPressed: () => controller.changeStyle(),
+            onPressed: () {
+              controller.changeStyle();
+              // Get.to(CopyNe());
+            },
             icon: const Icon(Icons.change_circle),
           ),
         ],
@@ -292,7 +315,7 @@ class _AddressTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 240,
+      width: 260,
       margin: margin,
       child: DropdownButtonFormField(
         decoration: const InputDecoration(
@@ -356,3 +379,77 @@ class _AddressTextfield extends StatelessWidget {
 //         ),
 //       ),
 //     );
+
+class AutocompleteBasicExample extends StatelessWidget {
+  const AutocompleteBasicExample({
+    Key? key,
+    required this.list,
+  }) : super(key: key);
+
+  final List<String> list;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+      ),
+      width: 260,
+      child: Autocomplete<String>(
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          if (textEditingValue.text == '') {
+            return const Iterable<String>.empty();
+          }
+          return list.where((String option) {
+            return option.contains(textEditingValue.text);
+          });
+        },
+        onSelected: (String selection) {
+          debugPrint('You just selected $selection');
+        },
+        fieldViewBuilder: (BuildContext context,
+            TextEditingController fieldTextEditingController,
+            FocusNode fieldFocusNode,
+            VoidCallback onFieldSubmitted) {
+          return TextField(
+            controller: fieldTextEditingController,
+            focusNode: fieldFocusNode,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          );
+        },
+        optionsViewBuilder: (
+          BuildContext context,
+          AutocompleteOnSelected<String> onSelected,
+          Iterable<String> options,
+        ) {
+          return Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              child: Container(
+                width: 300,
+                color: Colors.teal,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(10.0),
+                  itemCount: options.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final String option = options.elementAt(index);
+
+                    return GestureDetector(
+                      onTap: () {
+                        onSelected(option);
+                      },
+                      child: ListTile(
+                        title: Text(option,
+                            style: const TextStyle(color: Colors.white)),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

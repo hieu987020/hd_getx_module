@@ -9,16 +9,16 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     TextEditingController output = TextEditingController(text: '');
     return Scaffold(
-      appBar: AppBar(title: const Text('HomeView'), centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
               AddressWidget(
-                width: 400,
-                height: 550,
-                color: Colors.grey[800],
+                width: 700,
+                height: 800,
+                color: Colors.red[900],
+                childPadding: const EdgeInsets.all(15),
                 addressStyle: AddressStyle.oneColumn,
                 showChangeStyleIcon: true,
                 tagController: 'tag1',
