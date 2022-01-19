@@ -8,6 +8,7 @@ class AddressController extends GetxController {
   final selectedCity = RxnString();
   final selectedDistrict = RxnString();
 
+  final output = RxnString();
   // get addressStyle => _addressStyle.value;
   // set addressStyle(value) => _addressStyle.value = value;
 
@@ -47,6 +48,10 @@ class AddressController extends GetxController {
         break;
     }
     listDistrict(list);
+  }
+
+  void getOuput() {
+    output.value = selectedCity.value! + selectedDistrict.value!;
   }
 
   void initNow(AddressStyle value) {

@@ -18,14 +18,14 @@ class _DefaultText {
 class AddressWidget extends GetView<AddressController> {
   // ignore: use_key_in_widget_constructors
   const AddressWidget({
-    this.width,
-    this.height,
-    this.title,
-    this.child,
-    this.mainAxisAlignmentRow = MainAxisAlignment.center,
+    //? Customize
     this.addressStyle = AddressStyle.oneColumn,
     this.showChangeStyleIcon = false,
     this.tagController,
+    required this.jsonOutput,
+    //? Basic Container
+    this.width,
+    this.height,
     this.alignment,
     this.padding,
     this.color,
@@ -39,12 +39,10 @@ class AddressWidget extends GetView<AddressController> {
   });
 
   //? Customize
-  final Widget? title;
-  final List<Widget>? child;
-  final MainAxisAlignment mainAxisAlignmentRow;
   final AddressStyle addressStyle;
   final bool showChangeStyleIcon;
   final String? tagController;
+  final TextEditingController jsonOutput;
   //? Basic Container
   final double? width;
   final double? height;
@@ -67,18 +65,22 @@ class AddressWidget extends GetView<AddressController> {
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
     controller.initNow(addressStyle);
-
-    Widget header = title ??
-        const Text(
-          _DefaultText.titleLabel,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-        );
-
     const EdgeInsets defaultMargin = EdgeInsets.all(5);
+    Widget header = Container(
+      margin: defaultMargin,
+      child: const Text(
+        _DefaultText.titleLabel,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+
     Container streetTextfield = Container(
       margin: defaultMargin,
-      width: 120,
+      width: 220,
       child: const TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -89,7 +91,7 @@ class AddressWidget extends GetView<AddressController> {
 
     Container postCodeTextfield = Container(
       margin: defaultMargin,
-      width: 120,
+      width: 220,
       child: const TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -100,8 +102,13 @@ class AddressWidget extends GetView<AddressController> {
 
     Obx cityDropdown = Obx(
       () => Container(
+        width: 220,
         margin: defaultMargin,
-        child: DropdownButton(
+        child: DropdownButtonFormField(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+          isExpanded: true,
           hint: const Text(_DefaultText.cityLabel),
           value: controller.selectedCity.value,
           onChanged: (String? newValue) {
@@ -120,8 +127,13 @@ class AddressWidget extends GetView<AddressController> {
 
     Obx districtDropdown = Obx(
       () => Container(
+        width: 220,
         margin: defaultMargin,
-        child: DropdownButton(
+        child: DropdownButtonFormField(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+          isExpanded: true,
           hint: const Text(_DefaultText.districtLabel),
           value: controller.selectedDistrict.value,
           onChanged: (String? newValue) {
