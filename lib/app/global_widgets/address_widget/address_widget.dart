@@ -7,9 +7,17 @@ enum AddressStyle {
   twoColumn,
 }
 
+class _DefaultText {
+  static const String titleLabel = "Thông tin người liên hệ";
+  static const String streetLabel = "Số nhà/Tên đường";
+  static const String postCodeLabel = "Nhập mã địa lý hành chính";
+  static const String cityLabel = "Lựa chọn Tỉnh/ Thành Phố";
+  static const String districtLabel = "Lựa chọn Quận/Huyện";
+}
+
 class AddressWidget extends GetView<AddressController> {
   // ignore: use_key_in_widget_constructors
-  AddressWidget({
+  const AddressWidget({
     this.width,
     this.height,
     this.title,
@@ -55,43 +63,46 @@ class AddressWidget extends GetView<AddressController> {
   // ignore: overridden_fields
   String? get tag => tagController;
 
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        title ?? const SizedBox(),
-      ],
+  @override
+  Widget build(BuildContext context) {
+    Get.put(AddressController(), tag: tagController);
+    controller.initNow(addressStyle);
+
+    Widget header = title ??
+        const Text(
+          _DefaultText.titleLabel,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+        );
+
+    const EdgeInsets defaultMargin = EdgeInsets.all(5);
+    Container streetTextfield = Container(
+      margin: defaultMargin,
+      width: 120,
+      child: const TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: _DefaultText.streetLabel,
+        ),
+      ),
     );
-  }
 
-  Container streetTextfield = Container(
-    margin: const EdgeInsets.all(5),
-    width: 120,
-    child: const TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Số nhà/Tên đường',
+    Container postCodeTextfield = Container(
+      margin: defaultMargin,
+      width: 120,
+      child: const TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: _DefaultText.postCodeLabel,
+        ),
       ),
-    ),
-  );
-  Container postCodeTextfield = Container(
-    margin: const EdgeInsets.all(5),
-    width: 120,
-    child: const TextField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Nhập mã địa lý hành chính',
-      ),
-    ),
-  );
+    );
 
-  String? initialValue;
-  Obx cityDropdown() {
-    return Obx(
+    Obx cityDropdown = Obx(
       () => Container(
-        margin: const EdgeInsets.all(5),
+        margin: defaultMargin,
         child: DropdownButton(
-          hint: const Text('Lựa chọn Tỉnh/ Thành Phố'),
+          hint: const Text(_DefaultText.cityLabel),
           value: controller.selectedCity.value,
           onChanged: (String? newValue) {
             controller.cityOnChange(newValue);
@@ -106,14 +117,12 @@ class AddressWidget extends GetView<AddressController> {
         ),
       ),
     );
-  }
 
-  Obx districtDropdown() {
-    return Obx(
+    Obx districtDropdown = Obx(
       () => Container(
-        margin: const EdgeInsets.all(5),
+        margin: defaultMargin,
         child: DropdownButton(
-          hint: const Text('Lựa chọn Quận/Huyện'),
+          hint: const Text(_DefaultText.districtLabel),
           value: controller.selectedDistrict.value,
           onChanged: (String? newValue) {
             controller.districtOnChange(newValue);
@@ -128,57 +137,54 @@ class AddressWidget extends GetView<AddressController> {
         ),
       ),
     );
-  }
 
-  Widget _buildBody() {
-    switch (controller.addressStyle.value) {
-      case AddressStyle.oneColumn:
-        return Expanded(
-          child: Row(
+    Widget oneColumnStyle = Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  streetTextfield,
-                  postCodeTextfield,
-                  cityDropdown(),
-                  districtDropdown(),
-                ],
-              ),
+              streetTextfield,
+              postCodeTextfield,
+              cityDropdown,
+              districtDropdown,
             ],
           ),
-        );
-      case AddressStyle.twoColumn:
-        return Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+        ],
+      ),
+    );
+    Widget twoColumnStyle = Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  streetTextfield,
-                  postCodeTextfield,
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  cityDropdown(),
-                  districtDropdown(),
-                ],
-              ),
+              streetTextfield,
+              postCodeTextfield,
             ],
           ),
-        );
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              cityDropdown,
+              districtDropdown,
+            ],
+          ),
+        ],
+      ),
+    );
+    Obx body = Obx(() {
+      switch (controller.addressStyle.value!) {
+        case AddressStyle.oneColumn:
+          return oneColumnStyle;
+        case AddressStyle.twoColumn:
+          return twoColumnStyle;
+      }
+    });
 
-      default:
-        return const SizedBox();
-    }
-  }
-
-  Widget _buildFooter() {
-    return Visibility(
+    Widget footer = Visibility(
       visible: showChangeStyleIcon,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -187,40 +193,31 @@ class AddressWidget extends GetView<AddressController> {
           IconButton(
             iconSize: 40,
             onPressed: () => controller.changeStyle(),
-            // controller.changeStyle()
             icon: const Icon(Icons.change_circle),
           ),
         ],
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Get.put(AddressController(), tag: tagController);
-    controller.initNow(addressStyle);
-    return Obx(
-      () => Container(
-        width: width,
-        height: height,
-        alignment: alignment,
-        padding: padding,
-        color: color,
-        decoration: decoration,
-        foregroundDecoration: foregroundDecoration,
-        constraints: constraints,
-        margin: margin,
-        transform: transform,
-        transformAlignment: transformAlignment,
-        clipBehavior: clipBehavior,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildHeader(),
-            _buildBody(),
-            _buildFooter(),
-          ],
-        ),
+    return Container(
+      width: width,
+      height: height,
+      alignment: alignment,
+      padding: padding,
+      color: color,
+      decoration: decoration,
+      foregroundDecoration: foregroundDecoration,
+      constraints: constraints,
+      margin: margin,
+      transform: transform,
+      transformAlignment: transformAlignment,
+      clipBehavior: clipBehavior,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          header,
+          body,
+          footer,
+        ],
       ),
     );
   }

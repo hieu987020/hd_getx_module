@@ -14,10 +14,10 @@ class AddressController extends GetxController {
   changeStyle() {
     switch (addressStyle.value) {
       case AddressStyle.oneColumn:
-        addressStyle(AddressStyle.twoColumn);
+        addressStyle.value = AddressStyle.twoColumn;
         break;
       case AddressStyle.twoColumn:
-        addressStyle(AddressStyle.oneColumn);
+        addressStyle.value = AddressStyle.oneColumn;
         break;
       default:
     }
@@ -26,9 +26,8 @@ class AddressController extends GetxController {
   void cityOnChange(String? newValue) {
     String? nullVal;
     selectedCity(newValue);
-    selectedDistrict(null);
+    selectedDistrict.value = nullVal;
     fetchDistricts();
-    print(selectedDistrict.value);
   }
 
   void districtOnChange(String? newValue) {
