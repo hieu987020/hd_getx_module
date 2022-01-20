@@ -17,7 +17,7 @@ class HomeView extends GetView<HomeController> {
               AddressWidget(
                 width: 700,
                 height: 800,
-                color: Colors.red[900],
+                color: Colors.grey[800],
                 childPadding: const EdgeInsets.all(15),
                 addressStyle: AddressStyle.oneColumn,
                 showChangeStyleIcon: true,

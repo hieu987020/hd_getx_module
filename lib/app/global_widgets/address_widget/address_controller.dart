@@ -7,10 +7,10 @@ class AddressController extends GetxController {
   final listDistrict = RxList<String>();
   final listWard = RxList<String>();
   final listTown = RxList<String>();
-  final selectedCity = ''.obs;
-  final selectedDistrict = ''.obs;
-  final selectedWard = ''.obs;
-  final selectedTown = ''.obs;
+  final selectedCity = RxnString();
+  final selectedDistrict = RxnString();
+  final selectedWard = RxnString();
+  final selectedTown = RxnString();
   final output = ''.obs;
 
   changeStyle() {
@@ -26,31 +26,31 @@ class AddressController extends GetxController {
   }
 
   void cityOnChange(String? newValue) {
-    selectedCity(newValue);
-    selectedDistrict('');
-    selectedWard('');
-    selectedTown('');
+    selectedCity.value = newValue;
+    selectedDistrict.value = null;
+    selectedWard.value = null;
+    selectedTown.value = null;
     fetchDistricts();
     listWard.value = RxList<String>();
     listTown.value = RxList<String>();
   }
 
   void districtOnChange(String? newValue) {
-    selectedDistrict(newValue);
-    selectedWard('');
-    selectedTown('');
+    selectedDistrict.value = newValue;
+    selectedWard.value = null;
+    selectedTown.value = null;
     fetchWards();
     listTown.value = RxList<String>();
   }
 
   void wardOnChange(String? newValue) {
-    selectedWard(newValue);
-    selectedTown('');
+    selectedWard.value = newValue;
+    selectedTown.value = null;
     fetchTowns();
   }
 
   void townOnChange(String? newValue) {
-    selectedTown(newValue);
+    selectedTown.value = newValue;
   }
 
   void fetchCities() => listCity(['Hồ Chí Minh', 'Hà Nội']);
@@ -58,39 +58,40 @@ class AddressController extends GetxController {
   void fetchDistricts() {
     switch (selectedCity.value) {
       case 'Hồ Chí Minh':
-        listDistrict(['Quận 1', 'Quận 2']);
+        listDistrict.value = ['Quận 1', 'Quận 2'];
         break;
       case 'Hà Nội':
-        listDistrict(['Quận Hoàn Kiếm', 'Quận Đống Đa']);
+        listDistrict.value = ['Quận Hoàn Kiếm', 'Quận Đống Đa'];
         break;
       default:
-        listDistrict(RxList<String>());
+        listDistrict.value = RxList<String>();
     }
   }
 
   void fetchWards() {
     switch (selectedDistrict.value) {
       case 'Quận 1':
-        listWard(['Phường 1', 'Phường 2']);
+        listWard.value = ['Phường 1', 'Phường 2'];
+
         break;
       case 'Quận Hoàn Kiếm':
-        listWard(['Phường Hoàn Kiếm', 'Phường Đống Đa']);
+        listWard.value = ['Phường Hoàn Kiếm', 'Phường Đống Đa'];
         break;
       default:
-        listWard(RxList<String>());
+        listWard.value = RxList<String>();
     }
   }
 
   void fetchTowns() {
     switch (selectedWard.value) {
       case 'Phường 1':
-        listTown(['Khu phố 1', 'Khu phố 2']);
+        listTown.value = ['Khu phố 1', 'Khu phố 2'];
         break;
       case 'Phường Hoàn Kiếm':
-        listTown(['Khu phố Hoàn Kiếm', 'Khu phố Đống Đa']);
+        listTown.value = ['Khu phố Hoàn Kiếm', 'Khu phố Đống Đa'];
         break;
       default:
-        listTown(RxList<String>());
+        listTown.value = RxList<String>();
     }
   }
 
@@ -99,7 +100,7 @@ class AddressController extends GetxController {
   }
 
   void initNow(AddressStyle value) {
-    addressStyle(value);
+    addressStyle.value = value;
     fetchCities();
   }
 }

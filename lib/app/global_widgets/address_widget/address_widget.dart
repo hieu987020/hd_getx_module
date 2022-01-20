@@ -81,64 +81,83 @@ class AddressWidget extends GetView<AddressController> {
     Widget postCodeTextfield =
         _AddressTextFielddd(childPadding: childPadding, childWidth: childWidth);
 
-    String? initialValue;
     Obx cityDropdown = Obx(() {
       return _AddressDropdownButton(
+        // key: const Key('city'),
         width: childWidth,
         margin: childPadding,
         hintText: _DefaultText.cityLabel,
-        value: controller.selectedCity.value == ''
-            ? initialValue
-            : controller.selectedCity.value,
+        value: controller.selectedCity.value,
         onChanged: (Object? newValue) {
           controller.cityOnChange(newValue.toString());
         },
-        items: controller.listCity,
+        items:
+            controller.listCity.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       );
     });
 
     Obx districtDropdown = Obx(() {
       return _AddressDropdownButton(
+        // key: const Key('district'),
         width: childWidth,
         margin: childPadding,
         hintText: _DefaultText.districtLabel,
-        value: controller.selectedDistrict.value == ''
-            ? initialValue
-            : controller.selectedDistrict.value,
+        value: controller.selectedDistrict.value,
         onChanged: (Object? newValue) {
           controller.districtOnChange(newValue.toString());
         },
-        items: controller.listDistrict,
+        items: controller.listDistrict
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       );
     });
 
     Obx wardDropdown = Obx(() {
       return _AddressDropdownButton(
+        // key: const Key('ward'),
         width: childWidth,
         margin: childPadding,
         hintText: _DefaultText.wardLabel,
-        value: controller.selectedWard.value == ''
-            ? initialValue
-            : controller.selectedWard.value,
+        value: controller.selectedWard.value,
         onChanged: (Object? newValue) {
           controller.wardOnChange(newValue.toString());
         },
-        items: controller.listWard,
+        items:
+            controller.listWard.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       );
     });
 
     Obx townDropdown = Obx(() {
       return _AddressDropdownButton(
+        // key: const Key('town'),
         width: childWidth,
         margin: childPadding,
         hintText: _DefaultText.townLabel,
-        value: controller.selectedTown.value == ''
-            ? initialValue
-            : controller.selectedTown.value,
+        value: controller.selectedTown.value,
         onChanged: (Object? newValue) {
           controller.townOnChange(newValue.toString());
         },
-        items: controller.listTown,
+        items:
+            controller.listTown.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       );
     });
 
@@ -284,7 +303,7 @@ class _AddressDropdownButton extends StatelessWidget {
   final String hintText;
   final Object? value;
   final void Function(Object?)? onChanged;
-  final List<String> items;
+  final List<DropdownMenuItem<Object>>? items;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -299,12 +318,7 @@ class _AddressDropdownButton extends StatelessWidget {
         hint: Text(hintText),
         value: value,
         onChanged: onChanged,
-        items: items.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+        items: items,
       ),
     );
   }
