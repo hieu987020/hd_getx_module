@@ -24,7 +24,6 @@ class AddressController extends GetxController {
 
   void changeShowLabel() {
     showLabel.value = !showLabel.value;
-    print("this is ${showLabel.value}");
   }
 
   void getInputFromJson(Map<String, dynamic> json) {}

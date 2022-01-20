@@ -217,8 +217,12 @@ class AddressWidget extends GetView<AddressController> {
     });
 
     _ChangeStyleButton icon = _ChangeStyleButton(
-        showChangeStyleIcon: showIcon, controller: controller);
-
+      showChangeStyleIcon: showIcon,
+      tagController: tagController,
+    );
+    _ChangeLabelButton changeLabelIconButton = _ChangeLabelButton(
+      tagController: tagController,
+    );
     _AddressLabel streetLabel = _AddressLabel(
       text: streetLabelText,
       width: labelWidth,
@@ -279,6 +283,7 @@ class AddressWidget extends GetView<AddressController> {
             wardDropdown: wardDropdown,
             townDropdown: townDropdown,
             icon: icon,
+            changeLabelIconButton: changeLabelIconButton,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
             cityLabel: cityLabel,
@@ -296,6 +301,7 @@ class AddressWidget extends GetView<AddressController> {
             wardDropdown: wardDropdown,
             townDropdown: townDropdown,
             icon: icon,
+            changeLabelIconButton: changeLabelIconButton,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
             cityLabel: cityLabel,
@@ -337,6 +343,7 @@ class StyleOneColumn extends StatelessWidget {
     required this.wardDropdown,
     required this.townDropdown,
     required this.icon,
+    required this.changeLabelIconButton,
     required this.streetLabel,
     required this.postCodeLabel,
     required this.cityLabel,
@@ -353,6 +360,7 @@ class StyleOneColumn extends StatelessWidget {
   final Widget wardDropdown;
   final Widget townDropdown;
   final Widget icon;
+  final Widget changeLabelIconButton;
 
   final Widget streetLabel;
   final Widget postCodeLabel;
@@ -364,7 +372,7 @@ class StyleOneColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [titleWidget, icon]),
+        Row(children: [titleWidget, icon, changeLabelIconButton]),
         Row(children: [streetLabel, streetTextfield]),
         Row(children: [postCodeLabel, postCodeTextfield]),
         Row(children: [cityLabel, cityDropdown]),
@@ -387,6 +395,7 @@ class StyleTwoColumn extends StatelessWidget {
     required this.wardDropdown,
     required this.townDropdown,
     required this.icon,
+    required this.changeLabelIconButton,
     required this.streetLabel,
     required this.postCodeLabel,
     required this.cityLabel,
@@ -403,6 +412,7 @@ class StyleTwoColumn extends StatelessWidget {
   final Widget wardDropdown;
   final Widget townDropdown;
   final Widget icon;
+  final Widget changeLabelIconButton;
 
   final Widget streetLabel;
   final Widget postCodeLabel;
@@ -414,7 +424,7 @@ class StyleTwoColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [titleWidget, icon]),
+        Row(children: [titleWidget, icon, changeLabelIconButton]),
         Row(
           children: [
             Column(
@@ -446,18 +456,22 @@ class StyleTwoColumn extends StatelessWidget {
   }
 }
 
-class _ChangeStyleButton extends StatelessWidget {
+class _ChangeStyleButton extends GetView<AddressController> {
   const _ChangeStyleButton({
-    Key? key,
     required this.showChangeStyleIcon,
-    required this.controller,
-  }) : super(key: key);
+    this.tagController,
+  });
 
   final bool showChangeStyleIcon;
-  final AddressController controller;
+  final String? tagController;
+
+  @override
+  // ignore: overridden_fields
+  String? get tag => tagController;
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AddressController(), tag: tagController);
     return Visibility(
       visible: showChangeStyleIcon,
       child: Row(
@@ -468,12 +482,43 @@ class _ChangeStyleButton extends StatelessWidget {
             iconSize: 40,
             onPressed: () {
               controller.changeStyle();
-              // controller.changeShowLabel();
             },
             icon: const Icon(Icons.change_circle),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ChangeLabelButton extends GetView<AddressController> {
+  const _ChangeLabelButton({
+    this.tagController,
+  });
+
+  final String? tagController;
+
+  @override
+  // ignore: overridden_fields
+  String? get tag => tagController;
+
+  @override
+  Widget build(BuildContext context) {
+    Get.put(AddressController(), tag: tagController);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Obx(() => IconButton(
+              iconSize: 40,
+              onPressed: () {
+                controller.changeShowLabel();
+              },
+              icon: controller.showLabel.value
+                  ? const Icon(Icons.toggle_on)
+                  : const Icon(Icons.toggle_off),
+            )),
+      ],
     );
   }
 }
@@ -546,80 +591,6 @@ class _AddressDropdownButton extends StatelessWidget {
   }
 }
 
-class _AutocompleteExample extends StatelessWidget {
-  const _AutocompleteExample({
-    Key? key,
-    required this.list,
-  }) : super(key: key);
-
-  final List<String> list;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-      ),
-      width: 260,
-      child: Autocomplete<String>(
-        optionsBuilder: (TextEditingValue textEditingValue) {
-          if (textEditingValue.text == '') {
-            return const Iterable<String>.empty();
-          }
-          return list.where((String option) {
-            return option.contains(textEditingValue.text);
-          });
-        },
-        onSelected: (String selection) {
-          debugPrint('You just selected $selection');
-        },
-        fieldViewBuilder: (BuildContext context,
-            TextEditingController fieldTextEditingController,
-            FocusNode fieldFocusNode,
-            VoidCallback onFieldSubmitted) {
-          return TextField(
-            controller: fieldTextEditingController,
-            focusNode: fieldFocusNode,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          );
-        },
-        optionsViewBuilder: (
-          BuildContext context,
-          AutocompleteOnSelected<String> onSelected,
-          Iterable<String> options,
-        ) {
-          return Align(
-            alignment: Alignment.topLeft,
-            child: Material(
-              child: Container(
-                width: 300,
-                color: Colors.teal,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: options.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final String option = options.elementAt(index);
-
-                    return GestureDetector(
-                      onTap: () {
-                        onSelected(option);
-                      },
-                      child: ListTile(
-                        title: Text(option,
-                            style: const TextStyle(color: Colors.white)),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 class _AddressLabel extends GetView<AddressController> {
   const _AddressLabel({
     required this.text,
@@ -644,20 +615,97 @@ class _AddressLabel extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
-    return Obx(() => Visibility(
-          visible: controller.showLabel.value,
-          child: Container(
-            width: width,
-            height: height,
-            margin: margin,
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
+    return Obx(
+      () => Visibility(
+        visible: controller.showLabel.value,
+        child: Container(
+          width: width,
+          height: height,
+          margin: margin,
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.subtitle1,
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
+
+// class _AutocompleteExample extends StatelessWidget {
+//   const _AutocompleteExample({
+//     Key? key,
+//     required this.list,
+//   }) : super(key: key);
+
+//   final List<String> list;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         border: Border.all(color: Colors.white),
+//       ),
+//       width: 260,
+//       child: Autocomplete<String>(
+//         optionsBuilder: (TextEditingValue textEditingValue) {
+//           if (textEditingValue.text == '') {
+//             return const Iterable<String>.empty();
+//           }
+//           return list.where((String option) {
+//             return option.contains(textEditingValue.text);
+//           });
+//         },
+//         onSelected: (String selection) {
+//           debugPrint('You just selected $selection');
+//         },
+//         fieldViewBuilder: (BuildContext context,
+//             TextEditingController fieldTextEditingController,
+//             FocusNode fieldFocusNode,
+//             VoidCallback onFieldSubmitted) {
+//           return TextField(
+//             controller: fieldTextEditingController,
+//             focusNode: fieldFocusNode,
+//             style: const TextStyle(fontWeight: FontWeight.bold),
+//           );
+//         },
+//         optionsViewBuilder: (
+//           BuildContext context,
+//           AutocompleteOnSelected<String> onSelected,
+//           Iterable<String> options,
+//         ) {
+//           return Align(
+//             alignment: Alignment.topLeft,
+//             child: Material(
+//               child: Container(
+//                 width: 300,
+//                 color: Colors.teal,
+//                 child: ListView.builder(
+//                   padding: const EdgeInsets.all(10.0),
+//                   itemCount: options.length,
+//                   itemBuilder: (BuildContext context, int index) {
+//                     final String option = options.elementAt(index);
+
+//                     return GestureDetector(
+//                       onTap: () {
+//                         onSelected(option);
+//                       },
+//                       child: ListTile(
+//                         title: Text(option,
+//                             style: const TextStyle(color: Colors.white)),
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
 // Obx exam = Obx(() {
 //   return AutocompleteBasicExample(
 //     list: controller.listCity,
