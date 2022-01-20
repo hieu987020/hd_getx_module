@@ -47,8 +47,6 @@ class AddressWidget extends GetView<AddressController> {
     this.districtHintText = _DefaultText.districtHintText,
     this.wardHint = _DefaultText.wardHintText,
     this.townHint = _DefaultText.townHintText,
-    this.addressStyle = AddressStyle.oneColumn,
-    this.showIcon = false,
     this.tagController,
     this.jsonOutput,
     this.width,
@@ -87,8 +85,6 @@ class AddressWidget extends GetView<AddressController> {
   final String wardHint;
   final String townHint;
   //? control
-  final AddressStyle addressStyle;
-  final bool showIcon;
   final String? tagController;
   final TextEditingController? jsonOutput;
   //? Basic Container
@@ -112,7 +108,7 @@ class AddressWidget extends GetView<AddressController> {
   @override
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
-    controller.initNow(addressStyle);
+    controller.initNow();
 
     Container titleWidget = Container(
       margin: titlePadding,
@@ -216,13 +212,6 @@ class AddressWidget extends GetView<AddressController> {
       );
     });
 
-    _ChangeStyleButton icon = _ChangeStyleButton(
-      showChangeStyleIcon: showIcon,
-      tagController: tagController,
-    );
-    _ChangeLabelButton changeLabelIconButton = _ChangeLabelButton(
-      tagController: tagController,
-    );
     _AddressLabel streetLabel = _AddressLabel(
       text: streetLabelText,
       width: labelWidth,
@@ -271,6 +260,9 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
+    _AddressMenu menu = _AddressMenu(
+      tagController: tagController,
+    );
     Obx child = Obx(() {
       switch (controller.addressStyle.value) {
         case AddressStyle.oneColumn:
@@ -282,8 +274,7 @@ class AddressWidget extends GetView<AddressController> {
             districtDropdown: districtDropdown,
             wardDropdown: wardDropdown,
             townDropdown: townDropdown,
-            icon: icon,
-            changeLabelIconButton: changeLabelIconButton,
+            menu: menu,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
             cityLabel: cityLabel,
@@ -300,8 +291,7 @@ class AddressWidget extends GetView<AddressController> {
             districtDropdown: districtDropdown,
             wardDropdown: wardDropdown,
             townDropdown: townDropdown,
-            icon: icon,
-            changeLabelIconButton: changeLabelIconButton,
+            menu: menu,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
             cityLabel: cityLabel,
@@ -342,8 +332,7 @@ class StyleOneColumn extends StatelessWidget {
     required this.districtDropdown,
     required this.wardDropdown,
     required this.townDropdown,
-    required this.icon,
-    required this.changeLabelIconButton,
+    required this.menu,
     required this.streetLabel,
     required this.postCodeLabel,
     required this.cityLabel,
@@ -359,9 +348,7 @@ class StyleOneColumn extends StatelessWidget {
   final Widget districtDropdown;
   final Widget wardDropdown;
   final Widget townDropdown;
-  final Widget icon;
-  final Widget changeLabelIconButton;
-
+  final Widget menu;
   final Widget streetLabel;
   final Widget postCodeLabel;
   final Widget cityLabel;
@@ -372,7 +359,9 @@ class StyleOneColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [titleWidget, icon, changeLabelIconButton]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [titleWidget, menu]),
         Row(children: [streetLabel, streetTextfield]),
         Row(children: [postCodeLabel, postCodeTextfield]),
         Row(children: [cityLabel, cityDropdown]),
@@ -394,8 +383,7 @@ class StyleTwoColumn extends StatelessWidget {
     required this.districtDropdown,
     required this.wardDropdown,
     required this.townDropdown,
-    required this.icon,
-    required this.changeLabelIconButton,
+    required this.menu,
     required this.streetLabel,
     required this.postCodeLabel,
     required this.cityLabel,
@@ -411,9 +399,7 @@ class StyleTwoColumn extends StatelessWidget {
   final Widget districtDropdown;
   final Widget wardDropdown;
   final Widget townDropdown;
-  final Widget icon;
-  final Widget changeLabelIconButton;
-
+  final Widget menu;
   final Widget streetLabel;
   final Widget postCodeLabel;
   final Widget cityLabel;
@@ -424,7 +410,10 @@ class StyleTwoColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [titleWidget, icon, changeLabelIconButton]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [titleWidget, menu],
+        ),
         Row(
           children: [
             Column(
@@ -456,69 +445,66 @@ class StyleTwoColumn extends StatelessWidget {
   }
 }
 
-class _ChangeStyleButton extends GetView<AddressController> {
-  const _ChangeStyleButton({
-    required this.showChangeStyleIcon,
+class _AddressMenu extends GetView<AddressController> {
+  // ignore: use_key_in_widget_constructors
+  const _AddressMenu({
     this.tagController,
   });
 
-  final bool showChangeStyleIcon;
   final String? tagController;
-
   @override
-  // ignore: overridden_fields
   String? get tag => tagController;
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AddressController(), tag: tagController);
-    return Visibility(
-      visible: showChangeStyleIcon,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          IconButton(
-            iconSize: 40,
-            onPressed: () {
-              controller.changeStyle();
-            },
-            icon: const Icon(Icons.change_circle),
+    return PopupMenuButton<String>(
+      onSelected: (String? value) {
+        switch (value) {
+          case 'Hiện nhãn':
+            controller.changeShowLabel();
+            break;
+          case 'Bố cục 2 cột':
+            controller.changeStyle();
+            break;
+
+          default:
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return [
+          PopupMenuItem<String>(
+            value: 'Hiện nhãn',
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Visibility(
+                  visible: controller.showLabel.value,
+                  child: const Icon(Icons.check),
+                ),
+                const SizedBox(width: 5),
+                const Text('Hiện nhãn'),
+              ],
+            ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChangeLabelButton extends GetView<AddressController> {
-  const _ChangeLabelButton({
-    this.tagController,
-  });
-
-  final String? tagController;
-
-  @override
-  // ignore: overridden_fields
-  String? get tag => tagController;
-
-  @override
-  Widget build(BuildContext context) {
-    Get.put(AddressController(), tag: tagController);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Obx(() => IconButton(
-              iconSize: 40,
-              onPressed: () {
-                controller.changeShowLabel();
-              },
-              icon: controller.showLabel.value
-                  ? const Icon(Icons.toggle_on)
-                  : const Icon(Icons.toggle_off),
-            )),
-      ],
+          PopupMenuItem<String>(
+            value: 'Bố cục 2 cột',
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Visibility(
+                  visible:
+                      controller.addressStyle.value == AddressStyle.oneColumn
+                          ? false
+                          : true,
+                  child: const Icon(Icons.check),
+                ),
+                const SizedBox(width: 5),
+                const Text('Bố cục 2 cột'),
+              ],
+            ),
+          ),
+        ];
+      },
     );
   }
 }

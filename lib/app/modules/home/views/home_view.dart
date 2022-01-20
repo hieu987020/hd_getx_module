@@ -19,8 +19,6 @@ class HomeView extends GetView<HomeController> {
                 height: 450,
                 color: Colors.black,
                 childPadding: const EdgeInsets.symmetric(horizontal: 10),
-                addressStyle: AddressStyle.oneColumn,
-                showIcon: true,
                 tagController: 'tag1',
                 jsonOutput: output,
               ),
