@@ -3,7 +3,7 @@ import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.
 
 class AddressController extends GetxController {
   final addressStyle = AddressStyle.oneColumn.obs;
-  final listCity = RxList<String>();
+  final listCity = [''].obs;
   final listDistrict = RxList<String>();
   final listWard = RxList<String>();
   final listTown = RxList<String>();
@@ -12,8 +12,23 @@ class AddressController extends GetxController {
   final selectedWard = RxnString();
   final selectedTown = RxnString();
   final output = ''.obs;
+  final showLabel = true.obs;
+  Map<String, dynamic> json = {
+    "city": "",
+    "district": "",
+    "ward": "",
+    "town": "",
+    "street": "",
+    "postCode": "",
+  };
 
-  changeStyle() {
+  void changeShowLabel() {
+    showLabel.value = !showLabel.value;
+    print("this is ${showLabel.value}");
+  }
+
+  void getInputFromJson(Map<String, dynamic> json) {}
+  void changeStyle() {
     switch (addressStyle.value) {
       case AddressStyle.oneColumn:
         addressStyle.value = AddressStyle.twoColumn;

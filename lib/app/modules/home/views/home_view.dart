@@ -15,16 +15,16 @@ class HomeView extends GetView<HomeController> {
             children: [
               const SizedBox(height: 20),
               AddressWidget(
-                width: 700,
-                height: 800,
-                color: Colors.grey[800],
-                childPadding: const EdgeInsets.all(15),
+                width: 650,
+                height: 450,
+                color: Colors.black,
+                childPadding: const EdgeInsets.symmetric(horizontal: 10),
                 addressStyle: AddressStyle.oneColumn,
-                showChangeStyleIcon: true,
+                showIcon: true,
                 tagController: 'tag1',
                 jsonOutput: output,
               ),
-              // const SizedBox(height: 10),
+              const SizedBox(height: 10),
               // ElevatedButton(
               //     onPressed: () {
               //       showDialog(
@@ -35,7 +35,7 @@ class HomeView extends GetView<HomeController> {
               //               ));
               //     },
               //     child: const Text('Show output')),
-              const SizedBox(height: 200),
+              // const SizedBox(height: 200),
             ],
           ),
         ),
