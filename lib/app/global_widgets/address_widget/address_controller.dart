@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:hd_getx_module/app/global_widgets/address_widget/address_model.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 
 class AddressController extends GetxController {
@@ -13,7 +14,7 @@ class AddressController extends GetxController {
   final selectedWard = RxnString();
   final selectedTown = RxnString();
   final output = ''.obs;
-
+  final Provider provider = Provider();
   // Map<String, dynamic> json = {
   //   "city": "",
   //   "district": "",
@@ -67,7 +68,15 @@ class AddressController extends GetxController {
     selectedTown.value = newValue;
   }
 
-  void fetchCities() => listCity(['Hồ Chí Minh', 'Hà Nội']);
+  void fetchCities() async {
+    // listCity(['Hồ Chí Minh', 'Hà Nội']);
+    var result = await provider.fakeCity();
+    List<String> listCityString = [];
+    result.forEach((element) {
+      listCityString.add(element.name!);
+    });
+    listCity.value = listCityString;
+  }
 
   void fetchDistricts() {
     switch (selectedCity.value) {
