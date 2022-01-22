@@ -125,6 +125,13 @@ class AddressWidget extends GetView<AddressController> {
       hintText: streetHintText,
     );
 
+    _AddressTextField townTextfield = _AddressTextField(
+      width: fieldWidth,
+      height: fieldHeight,
+      childPadding: childPadding,
+      hintText: townHint,
+    );
+
     _AddressTextField postCodeTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
@@ -192,26 +199,6 @@ class AddressWidget extends GetView<AddressController> {
       );
     });
 
-    Obx townDropdown = Obx(() {
-      return _AddressDropdownButton(
-        width: fieldWidth,
-        height: fieldHeight,
-        margin: childPadding,
-        hintText: townHint,
-        value: controller.selectedTown.value,
-        onChanged: (Object? newValue) {
-          controller.townOnChange(newValue.toString());
-        },
-        items:
-            controller.listTown.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      );
-    });
-
     _AddressLabel streetLabel = _AddressLabel(
       text: streetLabelText,
       width: labelWidth,
@@ -269,11 +256,11 @@ class AddressWidget extends GetView<AddressController> {
           return StyleOneColumn(
             titleWidget: titleWidget,
             streetTextfield: streetTextfield,
+            townTextfield: townTextfield,
             postCodeTextfield: postCodeTextfield,
             cityDropdown: cityDropdown,
             districtDropdown: districtDropdown,
             wardDropdown: wardDropdown,
-            townDropdown: townDropdown,
             menu: menu,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
@@ -286,11 +273,11 @@ class AddressWidget extends GetView<AddressController> {
           return StyleTwoColumn(
             titleWidget: titleWidget,
             streetTextfield: streetTextfield,
+            townTextfield: townTextfield,
             postCodeTextfield: postCodeTextfield,
             cityDropdown: cityDropdown,
             districtDropdown: districtDropdown,
             wardDropdown: wardDropdown,
-            townDropdown: townDropdown,
             menu: menu,
             streetLabel: streetLabel,
             postCodeLabel: postCodeLabel,
@@ -327,47 +314,49 @@ class StyleOneColumn extends StatelessWidget {
     Key? key,
     required this.titleWidget,
     required this.streetTextfield,
+    required this.townTextfield,
     required this.postCodeTextfield,
     required this.cityDropdown,
     required this.districtDropdown,
     required this.wardDropdown,
-    required this.townDropdown,
-    required this.menu,
     required this.streetLabel,
     required this.postCodeLabel,
     required this.cityLabel,
     required this.districtLabel,
     required this.wardLabel,
     required this.townLabel,
+    required this.menu,
   }) : super(key: key);
 
   final Widget titleWidget;
   final Widget streetTextfield;
+  final Widget townTextfield;
   final Widget postCodeTextfield;
   final Widget cityDropdown;
   final Widget districtDropdown;
   final Widget wardDropdown;
-  final Widget townDropdown;
-  final Widget menu;
+
   final Widget streetLabel;
   final Widget postCodeLabel;
   final Widget cityLabel;
   final Widget districtLabel;
   final Widget wardLabel;
   final Widget townLabel;
+  final Widget menu;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [titleWidget, menu]),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [titleWidget, menu],
+        ),
         Row(children: [streetLabel, streetTextfield]),
+        Row(children: [townLabel, townTextfield]),
         Row(children: [postCodeLabel, postCodeTextfield]),
         Row(children: [cityLabel, cityDropdown]),
         Row(children: [districtLabel, districtDropdown]),
         Row(children: [wardLabel, wardDropdown]),
-        Row(children: [townLabel, townDropdown]),
       ],
     );
   }
@@ -378,11 +367,11 @@ class StyleTwoColumn extends StatelessWidget {
     Key? key,
     required this.titleWidget,
     required this.streetTextfield,
+    required this.townTextfield,
     required this.postCodeTextfield,
     required this.cityDropdown,
     required this.districtDropdown,
     required this.wardDropdown,
-    required this.townDropdown,
     required this.menu,
     required this.streetLabel,
     required this.postCodeLabel,
@@ -394,11 +383,12 @@ class StyleTwoColumn extends StatelessWidget {
 
   final Widget titleWidget;
   final Widget streetTextfield;
+  final Widget townTextfield;
   final Widget postCodeTextfield;
   final Widget cityDropdown;
   final Widget districtDropdown;
   final Widget wardDropdown;
-  final Widget townDropdown;
+
   final Widget menu;
   final Widget streetLabel;
   final Widget postCodeLabel;
@@ -421,21 +411,21 @@ class StyleTwoColumn extends StatelessWidget {
               children: [
                 streetLabel,
                 streetTextfield,
+                townLabel,
+                townTextfield,
                 postCodeLabel,
                 postCodeTextfield,
-                cityLabel,
-                cityDropdown,
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                cityLabel,
+                cityDropdown,
                 districtLabel,
                 districtDropdown,
                 wardLabel,
                 wardDropdown,
-                townLabel,
-                townDropdown,
               ],
             ),
           ],
@@ -462,6 +452,7 @@ class _AddressMenu extends GetView<AddressController> {
         switch (value) {
           case 'Hiện nhãn':
             controller.changeShowLabel();
+            controller.postCodeSubmit('37');
             break;
           case 'Bố cục 2 cột':
             controller.changeStyle();
