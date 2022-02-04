@@ -119,6 +119,7 @@ class AddressWidget extends GetView<AddressController> {
     );
 
     _AddressTextField streetTextfield = _AddressTextField(
+      // key: UniqueKey(),
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
@@ -250,6 +251,26 @@ class AddressWidget extends GetView<AddressController> {
     _AddressMenu menu = _AddressMenu(
       tagController: tagController,
     );
+    List<Widget> list = [];
+    list.add(titleWidget);
+    list.add(menu);
+    list.add(streetLabel);
+    list.add(streetTextfield);
+    list.add(townLabel);
+    list.add(townTextfield);
+    list.add(postCodeLabel);
+    list.add(postCodeTextfield);
+    list.add(cityLabel);
+    list.add(cityDropdown);
+    list.add(districtLabel);
+    list.add(districtDropdown);
+    list.add(wardLabel);
+    list.add(wardDropdown);
+
+    Map<String, Widget> map = {};
+    map.putIfAbsent('title', () => titleWidget);
+    map.putIfAbsent('menu', () => menu);
+
     Obx child = Obx(() {
       switch (controller.addressStyle.value) {
         case AddressStyle.oneColumn:
@@ -268,6 +289,7 @@ class AddressWidget extends GetView<AddressController> {
             districtLabel: districtLabel,
             wardLabel: wardLabel,
             townLabel: townLabel,
+            map: map,
           );
         case AddressStyle.twoColumn:
           return StyleTwoColumn(
@@ -285,6 +307,7 @@ class AddressWidget extends GetView<AddressController> {
             districtLabel: districtLabel,
             wardLabel: wardLabel,
             townLabel: townLabel,
+            list: list,
           );
         default:
           return const SizedBox();
@@ -310,23 +333,24 @@ class AddressWidget extends GetView<AddressController> {
 }
 
 class StyleOneColumn extends StatelessWidget {
-  const StyleOneColumn({
-    Key? key,
-    required this.titleWidget,
-    required this.streetTextfield,
-    required this.townTextfield,
-    required this.postCodeTextfield,
-    required this.cityDropdown,
-    required this.districtDropdown,
-    required this.wardDropdown,
-    required this.streetLabel,
-    required this.postCodeLabel,
-    required this.cityLabel,
-    required this.districtLabel,
-    required this.wardLabel,
-    required this.townLabel,
-    required this.menu,
-  }) : super(key: key);
+  const StyleOneColumn(
+      {Key? key,
+      required this.titleWidget,
+      required this.streetTextfield,
+      required this.townTextfield,
+      required this.postCodeTextfield,
+      required this.cityDropdown,
+      required this.districtDropdown,
+      required this.wardDropdown,
+      required this.streetLabel,
+      required this.postCodeLabel,
+      required this.cityLabel,
+      required this.districtLabel,
+      required this.wardLabel,
+      required this.townLabel,
+      required this.menu,
+      required this.map})
+      : super(key: key);
 
   final Widget titleWidget;
   final Widget streetTextfield;
@@ -343,13 +367,26 @@ class StyleOneColumn extends StatelessWidget {
   final Widget wardLabel;
   final Widget townLabel;
   final Widget menu;
+  final Map<String, Widget> map;
   @override
   Widget build(BuildContext context) {
     return Column(
+      // children: [
+      //   Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [list[0], list[1]],
+      //   ),
+      //   Row(children: [list.elementAt(2), list.elementAt(3)]),
+      //   // Row(children: [townLabel, townTextfield]),
+      //   // Row(children: [postCodeLabel, postCodeTextfield]),
+      //   // Row(children: [cityLabel, cityDropdown]),
+      //   // Row(children: [districtLabel, districtDropdown]),
+      //   // Row(children: [wardLabel, wardDropdown]),
+      // ],
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [titleWidget, menu],
+          children: [map['title']!, map['menu']!],
         ),
         Row(children: [streetLabel, streetTextfield]),
         Row(children: [townLabel, townTextfield]),
@@ -379,6 +416,7 @@ class StyleTwoColumn extends StatelessWidget {
     required this.districtLabel,
     required this.wardLabel,
     required this.townLabel,
+    required this.list,
   }) : super(key: key);
 
   final Widget titleWidget;
@@ -396,6 +434,7 @@ class StyleTwoColumn extends StatelessWidget {
   final Widget districtLabel;
   final Widget wardLabel;
   final Widget townLabel;
+  final List<Widget> list;
   @override
   Widget build(BuildContext context) {
     return Column(
