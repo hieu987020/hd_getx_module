@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_controller.dart';
@@ -7,46 +9,59 @@ enum AddressStyle {
   twoColumn,
 }
 
-class _DefaultText {
-  static const String titleText = "Thông tin người liên hệ";
+class DefaultText {
+  static const String LABEL_TITLE = "Thông tin người liên hệ";
+  static const String LABEL_STREET = "Nhập Số nhà/Tên đường";
+  static const String LABEL_POSTCODE = "Nhập mã địa lý hành chính";
+  static const String LABEL_CITY = "Lựa chọn Tỉnh/ Thành Phố";
+  static const String LABEL_DISTRICT = "Lựa chọn Quận/Huyện";
+  static const String LABEL_WARD = "Lựa chọn Xã/Phường/Thị trấn";
+  static const String LABEL_TOWN = "Lựa chọn Thôn/Ấp/Khu phố";
+  static const String HINT_STREET = "Số nhà/ Tên đường:(*)";
+  static const String HINT_TOWN = "Thôn/Ấp/Khu phố:";
+  static const String HINT_POSTCODE = "Mã Tĩnh/Quận/Xã:";
+  static const String HINT_CITY = "Tỉnh/Thành phố:(*)";
+  static const String HINT_DISTRICT = "Quận/Huyện:(*)";
+  static const String HINT_WARD = "Xã/Phường/Thị trấn:(*)";
 
-  static const String streetHintText = "Nhập Số nhà/Tên đường";
-  static const String postCodeHintText = "Nhập mã địa lý hành chính";
-  static const String cityHintText = "Lựa chọn Tỉnh/ Thành Phố";
-  static const String districtHintText = "Lựa chọn Quận/Huyện";
-  static const String wardHintText = "Lựa chọn Xã/Phường/Thị trấn";
-  static const String townHintText = "Lựa chọn Thôn/Ấp/Khu phố";
-
-  static const String streetLabelText = "Số nhà/ Tên đường:(*)";
-  static const String postCodeLabelText = "Mã Tĩnh/Quận/Xã:";
-  static const String cityLabelText = "Tỉnh/Thành phố:(*)";
-  static const String districtLabelText = "Quận/Huyện:(*)";
-  static const String wardLabelText = "Xã/Phường/Thị trấn:(*)";
-  static const String townLabelText = "Thôn/Ấp/Khu phố:";
+  static const String MAP_TITLE = 'title';
+  static const String MAP_MENU = 'menu';
+  static const String MAP_LABEL_STREET = 'label_street';
+  static const String MAP_LABEL_TOWN = 'label_town';
+  static const String MAP_LABEL_POSTCODE = 'label_postcode';
+  static const String MAP_LABEL_CITY = 'label_city';
+  static const String MAP_LABEL_DISTRICT = 'label_district';
+  static const String MAP_LABEL_WARD = 'label_ward';
+  static const String MAP_TEXTFIELD_STREET = 'textfield_street';
+  static const String MAP_TEXTFIELD_TOWN = 'textfield_town';
+  static const String MAP_TEXTFIELD_POSTCODE = 'textfield_postcode';
+  static const String MAP_DROPDOWN_CITY = 'dtopdown_city';
+  static const String MAP_DROPDOWN_DISTRICT = 'dtopdown_district';
+  static const String MAP_DROPDOWN_WARD = 'dtopdown_ward';
 }
 
 class AddressWidget extends GetView<AddressController> {
   // ignore: use_key_in_widget_constructors
   const AddressWidget({
-    this.titleText = _DefaultText.titleText,
+    this.titleText = DefaultText.LABEL_TITLE,
     this.titlePadding = const EdgeInsets.all(20),
     this.labelWidth = 200,
     this.labelHeight = 30,
     this.fieldWidth = 300,
     this.fieldHeight = 60,
     this.childPadding = const EdgeInsets.all(5),
-    this.streetLabelText = _DefaultText.streetLabelText,
-    this.postCodeLabelText = _DefaultText.postCodeLabelText,
-    this.cityLabelText = _DefaultText.cityLabelText,
-    this.districtLabelText = _DefaultText.districtLabelText,
-    this.wardLabelText = _DefaultText.wardLabelText,
-    this.townLabelText = _DefaultText.townLabelText,
-    this.streetHintText = _DefaultText.streetHintText,
-    this.postCodeHintText = _DefaultText.postCodeHintText,
-    this.cityHintText = _DefaultText.cityHintText,
-    this.districtHintText = _DefaultText.districtHintText,
-    this.wardHint = _DefaultText.wardHintText,
-    this.townHint = _DefaultText.townHintText,
+    this.streetLabelText = DefaultText.HINT_STREET,
+    this.postCodeLabelText = DefaultText.HINT_POSTCODE,
+    this.cityLabelText = DefaultText.HINT_CITY,
+    this.districtLabelText = DefaultText.HINT_DISTRICT,
+    this.wardLabelText = DefaultText.HINT_WARD,
+    this.townLabelText = DefaultText.HINT_TOWN,
+    this.streetHintText = DefaultText.LABEL_STREET,
+    this.postCodeHintText = DefaultText.LABEL_POSTCODE,
+    this.cityHintText = DefaultText.LABEL_CITY,
+    this.districtHintText = DefaultText.LABEL_DISTRICT,
+    this.wardHint = DefaultText.LABEL_WARD,
+    this.townHint = DefaultText.LABEL_TOWN,
     this.tagController,
     this.jsonOutput,
     this.width,
@@ -62,15 +77,12 @@ class AddressWidget extends GetView<AddressController> {
     this.transformAlignment,
     this.clipBehavior = Clip.none,
   });
-  //? title
   final String titleText;
   final EdgeInsetsGeometry? titlePadding;
-  //? child
   final double? labelWidth;
   final double? labelHeight;
   final double? fieldWidth;
   final double? fieldHeight;
-
   final EdgeInsetsGeometry? childPadding;
   final String streetLabelText;
   final String postCodeLabelText;
@@ -84,7 +96,6 @@ class AddressWidget extends GetView<AddressController> {
   final String districtHintText;
   final String wardHint;
   final String townHint;
-  //? control
   final String? tagController;
   final TextEditingController? jsonOutput;
   //? Basic Container
@@ -116,6 +127,10 @@ class AddressWidget extends GetView<AddressController> {
         titleText,
         style: Theme.of(context).textTheme.headline4,
       ),
+    );
+
+    _AddressMenu menu = _AddressMenu(
+      tagController: tagController,
     );
 
     _AddressTextField streetTextfield = _AddressTextField(
@@ -248,69 +263,31 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressMenu menu = _AddressMenu(
-      tagController: tagController,
-    );
-    List<Widget> list = [];
-    list.add(titleWidget);
-    list.add(menu);
-    list.add(streetLabel);
-    list.add(streetTextfield);
-    list.add(townLabel);
-    list.add(townTextfield);
-    list.add(postCodeLabel);
-    list.add(postCodeTextfield);
-    list.add(cityLabel);
-    list.add(cityDropdown);
-    list.add(districtLabel);
-    list.add(districtDropdown);
-    list.add(wardLabel);
-    list.add(wardDropdown);
-
     Map<String, Widget> map = {};
-    map.putIfAbsent('title', () => titleWidget);
-    map.putIfAbsent('menu', () => menu);
+    map.putIfAbsent(DefaultText.MAP_TITLE, () => titleWidget);
+    map.putIfAbsent(DefaultText.MAP_MENU, () => menu);
+    map.putIfAbsent(DefaultText.MAP_LABEL_STREET, () => streetLabel);
+    map.putIfAbsent(DefaultText.MAP_LABEL_TOWN, () => townLabel);
+    map.putIfAbsent(DefaultText.MAP_LABEL_POSTCODE, () => postCodeLabel);
+    map.putIfAbsent(DefaultText.MAP_LABEL_CITY, () => cityLabel);
+    map.putIfAbsent(DefaultText.MAP_LABEL_DISTRICT, () => districtLabel);
+    map.putIfAbsent(DefaultText.MAP_LABEL_WARD, () => wardLabel);
+    map.putIfAbsent(DefaultText.MAP_TEXTFIELD_STREET, () => streetTextfield);
+    map.putIfAbsent(DefaultText.MAP_TEXTFIELD_TOWN, () => townTextfield);
+    map.putIfAbsent(
+        DefaultText.MAP_TEXTFIELD_POSTCODE, () => postCodeTextfield);
+    map.putIfAbsent(DefaultText.MAP_DROPDOWN_CITY, () => cityDropdown);
+    map.putIfAbsent(DefaultText.MAP_DROPDOWN_DISTRICT, () => districtDropdown);
+    map.putIfAbsent(DefaultText.MAP_DROPDOWN_WARD, () => wardDropdown);
 
     Obx child = Obx(() {
       switch (controller.addressStyle.value) {
         case AddressStyle.oneColumn:
-          return StyleOneColumn(
-            titleWidget: titleWidget,
-            streetTextfield: streetTextfield,
-            townTextfield: townTextfield,
-            postCodeTextfield: postCodeTextfield,
-            cityDropdown: cityDropdown,
-            districtDropdown: districtDropdown,
-            wardDropdown: wardDropdown,
-            menu: menu,
-            streetLabel: streetLabel,
-            postCodeLabel: postCodeLabel,
-            cityLabel: cityLabel,
-            districtLabel: districtLabel,
-            wardLabel: wardLabel,
-            townLabel: townLabel,
-            map: map,
-          );
+          return StyleOneColumn(map: map);
         case AddressStyle.twoColumn:
-          return StyleTwoColumn(
-            titleWidget: titleWidget,
-            streetTextfield: streetTextfield,
-            townTextfield: townTextfield,
-            postCodeTextfield: postCodeTextfield,
-            cityDropdown: cityDropdown,
-            districtDropdown: districtDropdown,
-            wardDropdown: wardDropdown,
-            menu: menu,
-            streetLabel: streetLabel,
-            postCodeLabel: postCodeLabel,
-            cityLabel: cityLabel,
-            districtLabel: districtLabel,
-            wardLabel: wardLabel,
-            townLabel: townLabel,
-            list: list,
-          );
+          return StyleTwoColumn(map: map);
         default:
-          return const SizedBox();
+          return StyleOneColumn(map: map);
       }
     });
 
@@ -333,67 +310,44 @@ class AddressWidget extends GetView<AddressController> {
 }
 
 class StyleOneColumn extends StatelessWidget {
-  const StyleOneColumn(
-      {Key? key,
-      required this.titleWidget,
-      required this.streetTextfield,
-      required this.townTextfield,
-      required this.postCodeTextfield,
-      required this.cityDropdown,
-      required this.districtDropdown,
-      required this.wardDropdown,
-      required this.streetLabel,
-      required this.postCodeLabel,
-      required this.cityLabel,
-      required this.districtLabel,
-      required this.wardLabel,
-      required this.townLabel,
-      required this.menu,
-      required this.map})
-      : super(key: key);
+  const StyleOneColumn({
+    Key? key,
+    required this.map,
+  }) : super(key: key);
 
-  final Widget titleWidget;
-  final Widget streetTextfield;
-  final Widget townTextfield;
-  final Widget postCodeTextfield;
-  final Widget cityDropdown;
-  final Widget districtDropdown;
-  final Widget wardDropdown;
-
-  final Widget streetLabel;
-  final Widget postCodeLabel;
-  final Widget cityLabel;
-  final Widget districtLabel;
-  final Widget wardLabel;
-  final Widget townLabel;
-  final Widget menu;
   final Map<String, Widget> map;
   @override
   Widget build(BuildContext context) {
     return Column(
-      // children: [
-      //   Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [list[0], list[1]],
-      //   ),
-      //   Row(children: [list.elementAt(2), list.elementAt(3)]),
-      //   // Row(children: [townLabel, townTextfield]),
-      //   // Row(children: [postCodeLabel, postCodeTextfield]),
-      //   // Row(children: [cityLabel, cityDropdown]),
-      //   // Row(children: [districtLabel, districtDropdown]),
-      //   // Row(children: [wardLabel, wardDropdown]),
-      // ],
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [map['title']!, map['menu']!],
-        ),
-        Row(children: [streetLabel, streetTextfield]),
-        Row(children: [townLabel, townTextfield]),
-        Row(children: [postCodeLabel, postCodeTextfield]),
-        Row(children: [cityLabel, cityDropdown]),
-        Row(children: [districtLabel, districtDropdown]),
-        Row(children: [wardLabel, wardDropdown]),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          map[DefaultText.MAP_TITLE]!,
+          map[DefaultText.MAP_MENU]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_STREET]!,
+          map[DefaultText.MAP_TEXTFIELD_STREET]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_TOWN]!,
+          map[DefaultText.MAP_TEXTFIELD_TOWN]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_POSTCODE]!,
+          map[DefaultText.MAP_TEXTFIELD_POSTCODE]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_CITY]!,
+          map[DefaultText.MAP_DROPDOWN_CITY]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_DISTRICT]!,
+          map[DefaultText.MAP_DROPDOWN_DISTRICT]!,
+        ]),
+        Row(children: [
+          map[DefaultText.MAP_LABEL_WARD]!,
+          map[DefaultText.MAP_DROPDOWN_WARD]!,
+        ]),
       ],
     );
   }
@@ -402,71 +356,36 @@ class StyleOneColumn extends StatelessWidget {
 class StyleTwoColumn extends StatelessWidget {
   const StyleTwoColumn({
     Key? key,
-    required this.titleWidget,
-    required this.streetTextfield,
-    required this.townTextfield,
-    required this.postCodeTextfield,
-    required this.cityDropdown,
-    required this.districtDropdown,
-    required this.wardDropdown,
-    required this.menu,
-    required this.streetLabel,
-    required this.postCodeLabel,
-    required this.cityLabel,
-    required this.districtLabel,
-    required this.wardLabel,
-    required this.townLabel,
-    required this.list,
+    required this.map,
   }) : super(key: key);
 
-  final Widget titleWidget;
-  final Widget streetTextfield;
-  final Widget townTextfield;
-  final Widget postCodeTextfield;
-  final Widget cityDropdown;
-  final Widget districtDropdown;
-  final Widget wardDropdown;
-
-  final Widget menu;
-  final Widget streetLabel;
-  final Widget postCodeLabel;
-  final Widget cityLabel;
-  final Widget districtLabel;
-  final Widget wardLabel;
-  final Widget townLabel;
-  final List<Widget> list;
+  final Map<String, Widget> map;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [titleWidget, menu],
-        ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          map[DefaultText.MAP_TITLE]!,
+          map[DefaultText.MAP_MENU]!,
+        ]),
         Row(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                streetLabel,
-                streetTextfield,
-                townLabel,
-                townTextfield,
-                postCodeLabel,
-                postCodeTextfield,
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                cityLabel,
-                cityDropdown,
-                districtLabel,
-                districtDropdown,
-                wardLabel,
-                wardDropdown,
-              ],
-            ),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              map[DefaultText.MAP_LABEL_STREET]!,
+              map[DefaultText.MAP_TEXTFIELD_STREET]!,
+              map[DefaultText.MAP_LABEL_TOWN]!,
+              map[DefaultText.MAP_TEXTFIELD_TOWN]!,
+              map[DefaultText.MAP_LABEL_POSTCODE]!,
+              map[DefaultText.MAP_TEXTFIELD_POSTCODE]!,
+            ]),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              map[DefaultText.MAP_LABEL_CITY]!,
+              map[DefaultText.MAP_DROPDOWN_CITY]!,
+              map[DefaultText.MAP_LABEL_DISTRICT]!,
+              map[DefaultText.MAP_DROPDOWN_DISTRICT]!,
+              map[DefaultText.MAP_LABEL_WARD]!,
+              map[DefaultText.MAP_DROPDOWN_WARD]!,
+            ]),
           ],
         ),
       ],
