@@ -7,6 +7,11 @@ class Provider {
     var result = (cityJson).map((p) => City.fromMap(p)).toList();
     return result;
   }
+
+  Future<List<District>> fakeDistrict() async {
+    var result = (districtJson).map((p) => District.fromMap(p)).toList();
+    return result;
+  }
 }
 
 class City {
@@ -30,24 +35,24 @@ class City {
 }
 
 class District {
-  District({this.code, this.name, this.provinceCode});
-  int? code;
+  District({this.code, this.name, this.parentCode});
+  String? code;
   String? name;
-  int? provinceCode;
+  String? parentCode;
 
   Map<String, dynamic> toMap() {
     return {
       'code': code,
       'name': name,
-      'provinceCode': provinceCode,
+      'parent_code': parentCode,
     };
   }
 
   factory District.fromMap(Map<String, dynamic> map) {
     return District(
-      code: map['code']?.toInt(),
+      code: map['code'] as String,
       name: map['name'],
-      provinceCode: map['province_code']?.toInt(),
+      parentCode: map['parent_code'] as String,
     );
   }
 }

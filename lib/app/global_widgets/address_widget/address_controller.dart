@@ -18,6 +18,7 @@ class AddressController extends GetxController {
   final Provider provider = Provider();
 
   late final List<City> city;
+  List<District> district = [];
   void changeShowLabel() {
     showLabel.value = !showLabel.value;
   }
@@ -69,7 +70,6 @@ class AddressController extends GetxController {
   }
 
   void fetchCities() async {
-    // listCity(['Hồ Chí Minh', 'Hà Nội']);
     var result = await provider.fakeCity();
     city = result;
     List<String> listCityString = [];
@@ -80,30 +80,25 @@ class AddressController extends GetxController {
     listCity.value = listCityString;
   }
 
-  void fetchDistricts() {
-    switch (selectedCity.value) {
-      case 'Thành phố Hồ Chí Minh':
-        listDistrict.value = ['Quận 1', 'Quận 2'];
-        break;
-      case 'Hà Nội':
-        listDistrict.value = ['Quận Hoàn Kiếm', 'Quận Đống Đa'];
-        break;
-      default:
-        listDistrict.value = RxList<String>();
-    }
+  void fetchDistricts() async {
+    var result = await provider.fakeDistrict();
+    district = result;
+    List<String> listDistrictString = [];
+    var selectedCode = '';
+// ignore: avoid_function_literals_in_foreach_calls
+    city.forEach((element) {
+      if (element.name == selectedCity.value) {
+        selectedCode = element.code!;
+      }
+    });
+    // ignore: avoid_function_literals_in_foreach_calls
+    result.forEach((element) {
+      if (element.parentCode == selectedCode) {
+        listDistrictString.add(element.name!);
+      }
+    });
+    listDistrict.value = listDistrictString;
   }
 
-  void fetchWards() {
-    switch (selectedDistrict.value) {
-      case 'Quận 1':
-        listWard.value = ['Phường 1', 'Phường 2'];
-
-        break;
-      case 'Quận Hoàn Kiếm':
-        listWard.value = ['Phường Hoàn Kiếm', 'Phường Đống Đa'];
-        break;
-      default:
-        listWard.value = RxList<String>();
-    }
-  }
+  void fetchWards() {}
 }

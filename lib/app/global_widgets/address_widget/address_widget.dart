@@ -10,34 +10,34 @@ enum AddressStyle {
 }
 
 class DefaultText {
-  static const String LABEL_TITLE = "Thông tin người liên hệ";
-  static const String LABEL_STREET = "Nhập Số nhà/Tên đường";
-  static const String LABEL_POSTCODE = "Nhập mã địa lý hành chính";
-  static const String LABEL_CITY = "Lựa chọn Tỉnh/ Thành Phố";
-  static const String LABEL_DISTRICT = "Lựa chọn Quận/Huyện";
-  static const String LABEL_WARD = "Lựa chọn Xã/Phường/Thị trấn";
-  static const String LABEL_TOWN = "Lựa chọn Thôn/Ấp/Khu phố";
-  static const String HINT_STREET = "Số nhà/ Tên đường:(*)";
-  static const String HINT_TOWN = "Thôn/Ấp/Khu phố:";
-  static const String HINT_POSTCODE = "Mã Tĩnh/Quận/Xã:";
-  static const String HINT_CITY = "Tỉnh/Thành phố:(*)";
-  static const String HINT_DISTRICT = "Quận/Huyện:(*)";
-  static const String HINT_WARD = "Xã/Phường/Thị trấn:(*)";
+  static const LABEL_TITLE = "Thông tin người liên hệ";
+  static const LABEL_STREET = "Nhập Số nhà/Tên đường";
+  static const LABEL_POSTCODE = "Nhập mã địa lý hành chính";
+  static const LABEL_CITY = "Lựa chọn Tỉnh/ Thành Phố";
+  static const LABEL_DISTRICT = "Lựa chọn Quận/Huyện";
+  static const LABEL_WARD = "Lựa chọn Xã/Phường/Thị trấn";
+  static const LABEL_TOWN = "Lựa chọn Thôn/Ấp/Khu phố";
+  static const HINT_STREET = "Số nhà/ Tên đường:(*)";
+  static const HINT_TOWN = "Thôn/Ấp/Khu phố:";
+  static const HINT_POSTCODE = "Mã Tĩnh/Quận/Xã:";
+  static const HINT_CITY = "Tỉnh/Thành phố:(*)";
+  static const HINT_DISTRICT = "Quận/Huyện:(*)";
+  static const HINT_WARD = "Xã/Phường/Thị trấn:(*)";
 
-  static const String MAP_TITLE = 'title';
-  static const String MAP_MENU = 'menu';
-  static const String MAP_LABEL_STREET = 'label_street';
-  static const String MAP_LABEL_TOWN = 'label_town';
-  static const String MAP_LABEL_POSTCODE = 'label_postcode';
-  static const String MAP_LABEL_CITY = 'label_city';
-  static const String MAP_LABEL_DISTRICT = 'label_district';
-  static const String MAP_LABEL_WARD = 'label_ward';
-  static const String MAP_TEXTFIELD_STREET = 'textfield_street';
-  static const String MAP_TEXTFIELD_TOWN = 'textfield_town';
-  static const String MAP_TEXTFIELD_POSTCODE = 'textfield_postcode';
-  static const String MAP_DROPDOWN_CITY = 'dtopdown_city';
-  static const String MAP_DROPDOWN_DISTRICT = 'dtopdown_district';
-  static const String MAP_DROPDOWN_WARD = 'dtopdown_ward';
+  static const MAP_TITLE = 'title';
+  static const MAP_MENU = 'menu';
+  static const MAP_LABEL_STREET = 'label_street';
+  static const MAP_LABEL_TOWN = 'label_town';
+  static const MAP_LABEL_POSTCODE = 'label_postcode';
+  static const MAP_LABEL_CITY = 'label_city';
+  static const MAP_LABEL_DISTRICT = 'label_district';
+  static const MAP_LABEL_WARD = 'label_ward';
+  static const MAP_TEXTFIELD_STREET = 'textfield_street';
+  static const MAP_TEXTFIELD_TOWN = 'textfield_town';
+  static const MAP_TEXTFIELD_POSTCODE = 'textfield_postcode';
+  static const MAP_DROPDOWN_CITY = 'dtopdown_city';
+  static const MAP_DROPDOWN_DISTRICT = 'dtopdown_district';
+  static const MAP_DROPDOWN_WARD = 'dtopdown_ward';
 }
 
 class AddressWidget extends GetView<AddressController> {
@@ -121,7 +121,7 @@ class AddressWidget extends GetView<AddressController> {
     Get.put(AddressController(), tag: tagController);
     controller.initNow();
 
-    Container titleWidget = Container(
+    final Container titleWidget = Container(
       margin: titlePadding,
       child: Text(
         titleText,
@@ -129,33 +129,42 @@ class AddressWidget extends GetView<AddressController> {
       ),
     );
 
-    _AddressMenu menu = _AddressMenu(
+    final _AddressMenu menu = _AddressMenu(
       tagController: tagController,
     );
 
-    _AddressTextField streetTextfield = _AddressTextField(
+    final TextEditingController streetController = TextEditingController();
+
+    final _AddressTextField streetTextfield = _AddressTextField(
       // key: UniqueKey(),
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: streetHintText,
+      controller: streetController,
     );
 
-    _AddressTextField townTextfield = _AddressTextField(
+    final TextEditingController townController = TextEditingController();
+
+    final _AddressTextField townTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: townHint,
+      controller: townController,
     );
 
-    _AddressTextField postCodeTextfield = _AddressTextField(
+    final TextEditingController postCodeController = TextEditingController();
+
+    final _AddressTextField postCodeTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: postCodeHintText,
+      controller: postCodeController,
     );
 
-    Obx cityDropdown = Obx(() {
+    final Obx cityDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
@@ -175,7 +184,7 @@ class AddressWidget extends GetView<AddressController> {
       );
     });
 
-    Obx districtDropdown = Obx(() {
+    final Obx districtDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
@@ -195,7 +204,7 @@ class AddressWidget extends GetView<AddressController> {
       );
     });
 
-    Obx wardDropdown = Obx(() {
+    final Obx wardDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
@@ -215,7 +224,7 @@ class AddressWidget extends GetView<AddressController> {
       );
     });
 
-    _AddressLabel streetLabel = _AddressLabel(
+    final _AddressLabel streetLabel = _AddressLabel(
       text: streetLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -223,7 +232,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressLabel postCodeLabel = _AddressLabel(
+    final _AddressLabel postCodeLabel = _AddressLabel(
       text: postCodeLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -231,7 +240,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressLabel cityLabel = _AddressLabel(
+    final _AddressLabel cityLabel = _AddressLabel(
       text: cityLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -239,7 +248,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressLabel districtLabel = _AddressLabel(
+    final _AddressLabel districtLabel = _AddressLabel(
       text: districtLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -247,7 +256,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressLabel wardLabel = _AddressLabel(
+    final _AddressLabel wardLabel = _AddressLabel(
       text: wardLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -255,7 +264,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    _AddressLabel townLabel = _AddressLabel(
+    final _AddressLabel townLabel = _AddressLabel(
       text: townLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -263,7 +272,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    Map<String, Widget> map = {};
+    final Map<String, Widget> map = {};
     map.putIfAbsent(DefaultText.MAP_TITLE, () => titleWidget);
     map.putIfAbsent(DefaultText.MAP_MENU, () => menu);
     map.putIfAbsent(DefaultText.MAP_LABEL_STREET, () => streetLabel);
@@ -280,7 +289,7 @@ class AddressWidget extends GetView<AddressController> {
     map.putIfAbsent(DefaultText.MAP_DROPDOWN_DISTRICT, () => districtDropdown);
     map.putIfAbsent(DefaultText.MAP_DROPDOWN_WARD, () => wardDropdown);
 
-    Obx child = Obx(() {
+    final Obx child = Obx(() {
       switch (controller.addressStyle.value) {
         case AddressStyle.oneColumn:
           return StyleOneColumn(map: map);
@@ -465,12 +474,14 @@ class _AddressTextField extends StatelessWidget {
     this.width,
     this.height,
     this.hintText,
+    this.controller,
   }) : super(key: key);
 
   final EdgeInsetsGeometry? childPadding;
   final double? width;
   final double? height;
   final String? hintText;
+  final TextEditingController? controller;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -482,6 +493,7 @@ class _AddressTextField extends StatelessWidget {
           border: const OutlineInputBorder(),
           labelText: hintText,
         ),
+        controller: controller,
       ),
     );
   }
