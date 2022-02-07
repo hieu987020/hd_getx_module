@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_model.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
@@ -17,8 +19,9 @@ class AddressController extends GetxController {
   final output = ''.obs;
   final Provider provider = Provider();
 
-  late final List<City> city;
-  List<District> district = [];
+  late final List<City> _city;
+  List<District> _district = [];
+  List<Ward> _ward = [];
   void changeShowLabel() {
     showLabel.value = !showLabel.value;
   }
@@ -36,7 +39,7 @@ class AddressController extends GetxController {
   }
 
   void postCodeSubmit(String postCode) {
-    city.forEach((element) {
+    _city.forEach((element) {
       if (element.code == postCode) {
         // fetchDistricts();
         selectedCity.value = element.name;
@@ -71,9 +74,8 @@ class AddressController extends GetxController {
 
   void fetchCities() async {
     var result = await provider.fakeCity();
-    city = result;
+    _city = result;
     List<String> listCityString = [];
-    // ignore: avoid_function_literals_in_foreach_calls
     result.forEach((element) {
       listCityString.add(element.name!);
     });
@@ -82,17 +84,15 @@ class AddressController extends GetxController {
 
   void fetchDistricts() async {
     var result = await provider.fakeDistrict();
-    district = result;
+    _district = result;
     List<String> listDistrictString = [];
     var selectedCode = '';
-// ignore: avoid_function_literals_in_foreach_calls
-    city.forEach((element) {
+    _city.forEach((element) {
       if (element.name == selectedCity.value) {
         selectedCode = element.code!;
       }
     });
-    // ignore: avoid_function_literals_in_foreach_calls
-    result.forEach((element) {
+    _district.forEach((element) {
       if (element.parentCode == selectedCode) {
         listDistrictString.add(element.name!);
       }
@@ -100,5 +100,21 @@ class AddressController extends GetxController {
     listDistrict.value = listDistrictString;
   }
 
-  void fetchWards() {}
+  void fetchWards() async {
+    var result = await provider.fakeWard();
+    _ward = result;
+    List<String> listWardString = [];
+    var selectedCode = '';
+    _district.forEach((element) {
+      if (element.name == selectedDistrict.value) {
+        selectedCode = element.code!;
+      }
+    });
+    _ward.forEach((element) {
+      if (element.parentCode == selectedCode) {
+        listWardString.add(element.name!);
+      }
+    });
+    listWard.value = listWardString;
+  }
 }

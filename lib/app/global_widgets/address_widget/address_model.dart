@@ -12,6 +12,11 @@ class Provider {
     var result = (districtJson).map((p) => District.fromMap(p)).toList();
     return result;
   }
+
+  Future<List<Ward>> fakeWard() async {
+    var result = (wardJson).map((p) => Ward.fromMap(p)).toList();
+    return result;
+  }
 }
 
 class City {
@@ -51,31 +56,31 @@ class District {
   factory District.fromMap(Map<String, dynamic> map) {
     return District(
       code: map['code'] as String,
-      name: map['name'],
+      name: map['name'] as String,
       parentCode: map['parent_code'] as String,
     );
   }
 }
 
 class Ward {
-  Ward({this.code, this.name, this.districtCode});
-  int? code;
+  Ward({this.code, this.name, this.parentCode});
+  String? code;
   String? name;
-  int? districtCode;
+  String? parentCode;
 
   Map<String, dynamic> toMap() {
     return {
       'code': code,
       'name': name,
-      'district_code': districtCode,
+      'parent_code': parentCode,
     };
   }
 
   factory Ward.fromMap(Map<String, dynamic> map) {
     return Ward(
-      code: map['code']?.toInt(),
-      name: map['name'],
-      districtCode: map['districtCode']?.toInt(),
+      code: map['code'] as String,
+      name: map['name'] as String,
+      parentCode: map['parent_code'] as String,
     );
   }
 }
