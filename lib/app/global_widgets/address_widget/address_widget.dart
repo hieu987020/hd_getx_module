@@ -1,7 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_controller.dart';
 
 enum AddressStyle {
@@ -135,13 +138,25 @@ class AddressWidget extends GetView<AddressController> {
 
     final TextEditingController streetController = TextEditingController();
 
+    FocusNode streetFocus = FocusNode();
+    FocusNode townFocus = FocusNode();
+    FocusNode postCodeFocus = FocusNode();
+    FocusNode cityFocus = FocusNode();
+    FocusNode districtFocus = FocusNode();
+    FocusNode wardFocus = FocusNode();
     final _AddressTextField streetTextfield = _AddressTextField(
-      // key: UniqueKey(),
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: streetHintText,
       controller: streetController,
+      focusNode: streetFocus,
+      onEditingComplete: () {
+        if (streetFocus.hasFocus) {
+          print('co focus');
+        }
+        townFocus.requestFocus();
+      },
     );
 
     final TextEditingController townController = TextEditingController();
@@ -152,6 +167,10 @@ class AddressWidget extends GetView<AddressController> {
       childPadding: childPadding,
       hintText: townHint,
       controller: townController,
+      focusNode: townFocus,
+      onEditingComplete: () {
+        postCodeFocus.requestFocus();
+      },
     );
 
     final TextEditingController postCodeController = TextEditingController();
@@ -162,6 +181,10 @@ class AddressWidget extends GetView<AddressController> {
       childPadding: childPadding,
       hintText: postCodeHintText,
       controller: postCodeController,
+      focusNode: postCodeFocus,
+      onEditingComplete: () {
+        cityFocus.requestFocus();
+      },
     );
 
     final Obx cityDropdown = Obx(() {
@@ -174,6 +197,7 @@ class AddressWidget extends GetView<AddressController> {
         onChanged: (Object? newValue) {
           controller.cityOnChange(newValue.toString());
         },
+        focusNode: cityFocus,
         items:
             controller.listCity.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -475,6 +499,10 @@ class _AddressTextField extends StatelessWidget {
     this.height,
     this.hintText,
     this.controller,
+    this.focusNode,
+    this.onEditingComplete,
+    this.onChanged,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   final EdgeInsetsGeometry? childPadding;
@@ -482,18 +510,26 @@ class _AddressTextField extends StatelessWidget {
   final double? height;
   final String? hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final void Function()? onEditingComplete;
+  final void Function(String)? onChanged;
+  final void Function(String)? onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: childPadding,
       width: width,
       height: height,
-      child: TextField(
+      child: TextFormField(
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: hintText,
         ),
         controller: controller,
+        focusNode: focusNode,
+        onEditingComplete: onEditingComplete,
+        onChanged: onChanged,
+        onFieldSubmitted: onFieldSubmitted,
       ),
     );
   }
@@ -509,6 +545,7 @@ class _AddressDropdownButton extends StatelessWidget {
     this.value,
     this.onChanged,
     required this.items,
+    this.focusNode,
   }) : super(key: key);
 
   final double? width;
@@ -518,6 +555,7 @@ class _AddressDropdownButton extends StatelessWidget {
   final Object? value;
   final void Function(Object?)? onChanged;
   final List<DropdownMenuItem<Object>>? items;
+  final FocusNode? focusNode;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -533,6 +571,7 @@ class _AddressDropdownButton extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         items: items,
+        focusNode: focusNode,
       ),
     );
   }
