@@ -21,18 +21,18 @@ class AddressController extends GetxController {
   final output = ''.obs;
   final Provider provider = Provider();
 
-  late final String _cityHint;
-  late final String _districtHint;
-  late final String _wardHint;
+  String _cityHint = '';
+  String _districtHint = '';
+  String _wardHint = '';
 
-  late final List<City> _city;
+  List<City> _listCity = [];
   List<District> _district = [];
   List<Ward> _ward = [];
 
   void onChangePostcode(String? value) async {
     if (value != null) {
       if (value.length < 3) {
-        _city.forEach((element) {
+        _listCity.forEach((element) {
           if (element.code == value) {
             cityOnChange(element.name);
           }
@@ -62,11 +62,6 @@ class AddressController extends GetxController {
       } else {
         cityOnChange(_cityHint);
       }
-      // selectedCity.value = 'Vĩnh Phúc';
-      // fetchDistricts();
-      // selectedDistrict.value = 'Sông Lô';
-      // fetchWards();
-      // selectedWard.value = 'Lãng Công';
     }
   }
 
@@ -123,7 +118,7 @@ class AddressController extends GetxController {
 
   void fetchCities() async {
     var result = await provider.fakeCity();
-    _city = result;
+    _listCity = result;
     List<String> listCityString = [_cityHint];
     result.forEach((element) {
       listCityString.add(element.name!);
@@ -139,7 +134,7 @@ class AddressController extends GetxController {
     List<String> listDistrictString = [_districtHint];
     var selectedCode = '';
     // get city's code
-    _city.forEach((element) {
+    _listCity.forEach((element) {
       if (element.name == selectedCity.value) {
         selectedCode = element.code!;
       }

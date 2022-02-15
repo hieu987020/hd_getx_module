@@ -109,46 +109,24 @@ class AddressWidget extends GetView<AddressController> {
       FocusNode cityNode,
       FocusNode districtNode,
       FocusNode wardNode) {
-    streetNode.addListener(() {
-      if (streetNode.hasFocus) {
-        streetNode.requestFocus();
-      }
-      if (!streetNode.hasFocus) {
-        townNode.requestFocus();
-      }
-    });
-    townNode.addListener(() {
-      if (townNode.hasFocus) {
-        townNode.requestFocus();
-      }
-      if (!townNode.hasFocus) {
+    // streetNode.addListener(() {
+    //   if (!streetNode.hasFocus) {
+    //     townNode.requestFocus();
+    //   }
+    // });
+    // tab đụng vào đc nhưng bị double
+    // enter ko đụng vào đc
+    streetNode.onKey = ((streetNode, RawKeyEvent event) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         postCodeNode.requestFocus();
+        return KeyEventResult.handled;
       }
-    });
-    postCodeNode.addListener(() {
-      if (!postCodeNode.hasFocus) {
-        cityNode.requestFocus();
+      if (event.logicalKey == LogicalKeyboardKey.enter) {
+        log('enter');
+        postCodeNode.requestFocus();
+        return KeyEventResult.handled;
       }
-      // if (postCodeNode.hasFocus) {
-      //   postCodeNode.requestFocus();
-      // }
-    });
-    cityNode.addListener(() {
-      if (!cityNode.hasFocus) {
-        districtNode.requestFocus();
-      }
-      cityNode.addListener(() {});
-    });
-
-    districtNode.addListener(() {
-      if (!districtNode.hasFocus) {
-        wardNode.requestFocus();
-      }
-    });
-    wardNode.addListener(() {
-      if (!districtNode.hasFocus) {
-        wardNode.requestFocus();
-      }
+      return KeyEventResult.ignored;
     });
   }
 
@@ -189,12 +167,13 @@ class AddressWidget extends GetView<AddressController> {
   Widget build(BuildContext context) {
     Get.put(AddressController(), tag: tagController);
     controller.initNow(cityHintText, districtHintText, wardHint);
-    final streetNode = FocusNode();
-    final townNode = FocusNode();
-    final postCodeNode = FocusNode();
-    final cityNode = FocusNode();
-    final districtNode = FocusNode();
-    final wardNode = FocusNode();
+
+    FocusNode streetNode = FocusNode();
+    FocusNode townNode = FocusNode();
+    FocusNode postCodeNode = FocusNode();
+    FocusNode cityNode = FocusNode();
+    FocusNode districtNode = FocusNode();
+    FocusNode wardNode = FocusNode();
     _addListener(
         streetNode, townNode, postCodeNode, cityNode, districtNode, wardNode);
 
@@ -221,6 +200,9 @@ class AddressWidget extends GetView<AddressController> {
       hintText: streetHintText,
       controller: streetController,
       focusNode: streetNode,
+      onFieldSubmitted: (value) {
+        townNode.requestFocus();
+      },
     );
 
     final townTextfield = _AddressTextField(
@@ -230,6 +212,9 @@ class AddressWidget extends GetView<AddressController> {
       hintText: townHint,
       controller: townController,
       focusNode: townNode,
+      onFieldSubmitted: (value) {
+        postCodeNode.requestFocus();
+      },
     );
 
     final postCodeTextfield = _AddressTextField(
@@ -241,6 +226,9 @@ class AddressWidget extends GetView<AddressController> {
       focusNode: postCodeNode,
       onChanged: (value) {
         controller.onChangePostcode(value);
+      },
+      onFieldSubmitted: (value) {
+        cityNode.requestFocus();
       },
     );
 
@@ -262,6 +250,9 @@ class AddressWidget extends GetView<AddressController> {
             child: Text(value),
           );
         }).toList(),
+        onTap: () {
+          cityNode.requestFocus();
+        },
       );
     });
 
@@ -283,6 +274,9 @@ class AddressWidget extends GetView<AddressController> {
             child: Text(value),
           );
         }).toList(),
+        onTap: () {
+          districtNode.requestFocus();
+        },
       );
     });
 
@@ -304,6 +298,9 @@ class AddressWidget extends GetView<AddressController> {
             child: Text(value),
           );
         }).toList(),
+        onTap: () {
+          wardNode.requestFocus();
+        },
       );
     });
 
@@ -409,37 +406,61 @@ class StyleOneColumn extends StatelessWidget {
   final Map<WidgetMapping, Widget> map;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          map[WidgetMapping.title]!,
-          map[WidgetMapping.menu]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_street]!,
-          map[WidgetMapping.field_street]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_town]!,
-          map[WidgetMapping.field_town]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_postcode]!,
-          map[WidgetMapping.field_postcode]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_city]!,
-          map[WidgetMapping.field_city]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_district]!,
-          map[WidgetMapping.field_district]!,
-        ]),
-        Row(children: [
-          map[WidgetMapping.label_ward]!,
-          map[WidgetMapping.field_ward]!,
-        ]),
-      ],
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            map[WidgetMapping.title]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(1),
+              child: map[WidgetMapping.menu]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_street]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(2),
+              child: map[WidgetMapping.field_street]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_town]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(3),
+              child: map[WidgetMapping.field_town]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_postcode]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(4),
+              child: map[WidgetMapping.field_postcode]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_city]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(5),
+              child: map[WidgetMapping.field_city]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_district]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(6),
+              child: map[WidgetMapping.field_district]!,
+            ),
+          ]),
+          Row(children: [
+            map[WidgetMapping.label_ward]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(7),
+              child: map[WidgetMapping.field_ward]!,
+            ),
+          ]),
+        ],
+      ),
     );
   }
 }
@@ -453,33 +474,57 @@ class StyleTwoColumn extends StatelessWidget {
   final Map<WidgetMapping, Widget> map;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          map[WidgetMapping.title]!,
-          map[WidgetMapping.menu]!,
-        ]),
-        Row(
-          children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              map[WidgetMapping.label_street]!,
-              map[WidgetMapping.field_street]!,
-              map[WidgetMapping.label_town]!,
-              map[WidgetMapping.field_town]!,
-              map[WidgetMapping.label_postcode]!,
-              map[WidgetMapping.field_postcode]!,
-            ]),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              map[WidgetMapping.label_city]!,
-              map[WidgetMapping.field_city]!,
-              map[WidgetMapping.label_district]!,
-              map[WidgetMapping.field_district]!,
-              map[WidgetMapping.label_ward]!,
-              map[WidgetMapping.field_ward]!,
-            ]),
-          ],
-        ),
-      ],
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            map[WidgetMapping.title]!,
+            FocusTraversalOrder(
+              order: const NumericFocusOrder(1),
+              child: map[WidgetMapping.menu]!,
+            ),
+          ]),
+          Row(
+            children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                map[WidgetMapping.label_street]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(2),
+                  child: map[WidgetMapping.field_street]!,
+                ),
+                map[WidgetMapping.label_town]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(3),
+                  child: map[WidgetMapping.field_town]!,
+                ),
+                map[WidgetMapping.label_postcode]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(4),
+                  child: map[WidgetMapping.field_postcode]!,
+                ),
+              ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                map[WidgetMapping.label_city]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(5),
+                  child: map[WidgetMapping.field_city]!,
+                ),
+                map[WidgetMapping.label_district]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(6),
+                  child: map[WidgetMapping.field_district]!,
+                ),
+                map[WidgetMapping.label_ward]!,
+                FocusTraversalOrder(
+                  order: const NumericFocusOrder(7),
+                  child: map[WidgetMapping.field_ward]!,
+                ),
+              ]),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -560,6 +605,8 @@ class _AddressTextField extends StatelessWidget {
     this.onEditingComplete,
     this.onChanged,
     this.onFieldSubmitted,
+    this.onTap,
+    this.onSaved,
   }) : super(key: key);
 
   final EdgeInsetsGeometry? childPadding;
@@ -571,6 +618,8 @@ class _AddressTextField extends StatelessWidget {
   final void Function()? onEditingComplete;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
+  final void Function()? onTap;
+  final void Function(String?)? onSaved;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -587,6 +636,8 @@ class _AddressTextField extends StatelessWidget {
         onEditingComplete: onEditingComplete,
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmitted,
+        onTap: onTap,
+        onSaved: onSaved,
       ),
     );
   }
@@ -603,6 +654,7 @@ class _AddressDropdownButton extends StatelessWidget {
     this.onChanged,
     required this.items,
     this.focusNode,
+    this.onTap,
   }) : super(key: key);
 
   final double? width;
@@ -613,6 +665,7 @@ class _AddressDropdownButton extends StatelessWidget {
   final void Function(Object?)? onChanged;
   final List<DropdownMenuItem<Object>>? items;
   final FocusNode? focusNode;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -629,6 +682,7 @@ class _AddressDropdownButton extends StatelessWidget {
         onChanged: onChanged,
         items: items,
         focusNode: focusNode,
+        onTap: onTap,
       ),
     );
   }
