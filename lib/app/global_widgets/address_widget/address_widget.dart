@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_controller.dart';
 
-enum AddressStyle { oneColumn, twoColumn }
+enum LayoutMode { oneColumn, twoColumn }
 
 enum WidgetMapping {
   title,
@@ -109,23 +109,12 @@ class AddressWidget extends GetView<AddressController> {
       FocusNode cityNode,
       FocusNode districtNode,
       FocusNode wardNode) {
-    // streetNode.addListener(() {
-    //   if (!streetNode.hasFocus) {
-    //     townNode.requestFocus();
-    //   }
-    // });
-    // tab đụng vào đc nhưng bị double
-    // enter ko đụng vào đc
     streetNode.onKey = ((streetNode, RawKeyEvent event) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         postCodeNode.requestFocus();
         return KeyEventResult.handled;
       }
-      if (event.logicalKey == LogicalKeyboardKey.enter) {
-        log('enter');
-        postCodeNode.requestFocus();
-        return KeyEventResult.handled;
-      }
+
       return KeyEventResult.ignored;
     });
   }
@@ -165,146 +154,131 @@ class AddressWidget extends GetView<AddressController> {
 
   @override
   Widget build(BuildContext context) {
+    // Get controller
     Get.put(AddressController(), tag: tagController);
+
+    // Init data
     controller.initNow(cityHintText, districtHintText, wardHint);
 
+    // FocusNode
     FocusNode streetNode = FocusNode();
     FocusNode townNode = FocusNode();
     FocusNode postCodeNode = FocusNode();
     FocusNode cityNode = FocusNode();
     FocusNode districtNode = FocusNode();
     FocusNode wardNode = FocusNode();
+    cityNode.canRequestFocus = true;
+    // Add listender
     _addListener(
-        streetNode, townNode, postCodeNode, cityNode, districtNode, wardNode);
-
-    final streetController = TextEditingController();
-    final townController = TextEditingController();
-    final postCodeController = TextEditingController();
-
-    final titleWidget = Container(
-      margin: titlePadding,
-      child: Text(
-        titleText,
-        style: Theme.of(context).textTheme.headline4,
-      ),
+      streetNode,
+      townNode,
+      postCodeNode,
+      cityNode,
+      districtNode,
+      wardNode,
     );
 
-    final menu = _AddressMenu(
-      tagController: tagController,
-    );
+    // Create TextEdittingController
+    final TextEditingController streetController = TextEditingController();
+    final TextEditingController townController = TextEditingController();
+    final TextEditingController postCodeController = TextEditingController();
 
-    final streetTextfield = _AddressTextField(
+    // Title Widget
+    final Container titleWidget = Container(
+        margin: titlePadding,
+        child: Text(titleText, style: Theme.of(context).textTheme.headline4));
+
+    // Menu Widget
+    final _AddressMenu menu = _AddressMenu(tagController: tagController);
+
+    // Textfield : Street
+    final _AddressTextField streetTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: streetHintText,
       controller: streetController,
       focusNode: streetNode,
-      onFieldSubmitted: (value) {
-        townNode.requestFocus();
-      },
+      onFieldSubmitted: (value) => townNode.requestFocus(),
     );
 
-    final townTextfield = _AddressTextField(
+    // Textfield : Town
+    final _AddressTextField townTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: townHint,
       controller: townController,
       focusNode: townNode,
-      onFieldSubmitted: (value) {
-        postCodeNode.requestFocus();
-      },
+      // onFieldSubmitted: (value) => postCodeNode.requestFocus(),
     );
 
-    final postCodeTextfield = _AddressTextField(
+    // Textfield : Postcode
+    final _AddressTextField postCodeTextfield = _AddressTextField(
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
       hintText: postCodeHintText,
       controller: postCodeController,
       focusNode: postCodeNode,
-      onChanged: (value) {
-        controller.onChangePostcode(value);
-      },
-      onFieldSubmitted: (value) {
-        cityNode.requestFocus();
-      },
+      onChanged: (value) => controller.onChangePostcode(value),
+      // onFieldSubmitted: (value) => cityNode.requestFocus(),
     );
 
-    final cityDropdown = Obx(() {
+    // DropdownButton : City
+    final Obx cityDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
         margin: childPadding,
-        hintText: cityHintText,
-        value: controller.selectedCity.value,
-        onChanged: (Object? newValue) {
-          controller.cityOnChange(newValue.toString());
-        },
+        value: controller.selectedCityItem.value,
+        onChanged: (newValue) => controller.cityOnChange(newValue.toString()),
         focusNode: cityNode,
         items:
-            controller.listCity.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
+            controller.cityItems.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(value: value, child: Text(value));
         }).toList(),
-        onTap: () {
-          cityNode.requestFocus();
-        },
+        // onTap: () => cityNode.requestFocus(),
       );
     });
 
-    final districtDropdown = Obx(() {
+    // DropdownButton : District
+    final Obx districtDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
         margin: childPadding,
-        hintText: districtHintText,
-        value: controller.selectedDistrict.value,
-        onChanged: (Object? newValue) {
-          controller.districtOnChange(newValue.toString());
-        },
+        value: controller.selectedDistrictItem.value,
+        onChanged: (Object? newValue) =>
+            controller.districtOnChange(newValue.toString()),
         focusNode: districtNode,
-        items: controller.listDistrict
+        items: controller.districtItems
             .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
+          return DropdownMenuItem<String>(value: value, child: Text(value));
         }).toList(),
-        onTap: () {
-          districtNode.requestFocus();
-        },
+        onTap: () => districtNode.requestFocus(),
       );
     });
 
-    final wardDropdown = Obx(() {
+    // DropdownButton : Ward
+    final Obx wardDropdown = Obx(() {
       return _AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
         margin: childPadding,
-        hintText: wardHint,
-        value: controller.selectedWard.value,
+        value: controller.selectedWardItem.value,
         focusNode: wardNode,
-        onChanged: (Object? newValue) {
-          controller.wardOnChange(newValue.toString());
-        },
+        onChanged: (Object? newValue) =>
+            controller.wardOnChange(newValue.toString()),
         items:
-            controller.listWard.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
+            controller.wardItems.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(value: value, child: Text(value));
         }).toList(),
-        onTap: () {
-          wardNode.requestFocus();
-        },
+        onTap: () => wardNode.requestFocus(),
       );
     });
 
-    final streetLabel = _AddressLabel(
+    final _AddressLabel streetLabel = _AddressLabel(
       text: streetLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -312,7 +286,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    final postCodeLabel = _AddressLabel(
+    final _AddressLabel postCodeLabel = _AddressLabel(
       text: postCodeLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -320,7 +294,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    final cityLabel = _AddressLabel(
+    final _AddressLabel cityLabel = _AddressLabel(
       text: cityLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -328,7 +302,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    final districtLabel = _AddressLabel(
+    final _AddressLabel districtLabel = _AddressLabel(
       text: districtLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -336,7 +310,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    final wardLabel = _AddressLabel(
+    final _AddressLabel wardLabel = _AddressLabel(
       text: wardLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -344,7 +318,7 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
-    final townLabel = _AddressLabel(
+    final _AddressLabel townLabel = _AddressLabel(
       text: townLabelText,
       width: labelWidth,
       height: labelHeight,
@@ -353,26 +327,27 @@ class AddressWidget extends GetView<AddressController> {
     );
 
     var map = _mappingWidget(
-        titleWidget,
-        menu,
-        streetLabel,
-        townLabel,
-        postCodeLabel,
-        cityLabel,
-        districtLabel,
-        wardLabel,
-        streetTextfield,
-        townTextfield,
-        postCodeTextfield,
-        cityDropdown,
-        districtDropdown,
-        wardDropdown);
+      titleWidget,
+      menu,
+      streetLabel,
+      townLabel,
+      postCodeLabel,
+      cityLabel,
+      districtLabel,
+      wardLabel,
+      streetTextfield,
+      townTextfield,
+      postCodeTextfield,
+      cityDropdown,
+      districtDropdown,
+      wardDropdown,
+    );
 
     final Obx child = Obx(() {
-      switch (controller.addressStyle.value) {
-        case AddressStyle.oneColumn:
+      switch (controller.layoutMode.value) {
+        case LayoutMode.oneColumn:
           return StyleOneColumn(map: map);
-        case AddressStyle.twoColumn:
+        case LayoutMode.twoColumn:
           return StyleTwoColumn(map: map);
         default:
           return StyleOneColumn(map: map);
@@ -545,12 +520,15 @@ class _AddressMenu extends GetView<AddressController> {
       onSelected: (String? value) {
         switch (value) {
           case 'Hiện nhãn':
-            controller.changeShowLabel();
+            controller.showLabel();
             break;
           case 'Bố cục 2 cột':
-            controller.changeStyle();
+            if (controller.layoutMode.value == LayoutMode.oneColumn) {
+              controller.changeLayoutMode(LayoutMode.twoColumn);
+            } else {
+              controller.changeLayoutMode(LayoutMode.oneColumn);
+            }
             break;
-
           default:
         }
       },
@@ -562,7 +540,7 @@ class _AddressMenu extends GetView<AddressController> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Visibility(
-                  visible: controller.showLabel.value,
+                  visible: controller.labelEnable.value,
                   child: const Icon(Icons.check),
                 ),
                 const SizedBox(width: 5),
@@ -576,10 +554,9 @@ class _AddressMenu extends GetView<AddressController> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Visibility(
-                  visible:
-                      controller.addressStyle.value == AddressStyle.oneColumn
-                          ? false
-                          : true,
+                  visible: controller.layoutMode.value == LayoutMode.oneColumn
+                      ? false
+                      : true,
                   child: const Icon(Icons.check),
                 ),
                 const SizedBox(width: 5),
@@ -649,7 +626,6 @@ class _AddressDropdownButton extends StatelessWidget {
     this.width,
     this.height,
     this.margin,
-    required this.hintText,
     this.value,
     this.onChanged,
     required this.items,
@@ -660,7 +636,6 @@ class _AddressDropdownButton extends StatelessWidget {
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? margin;
-  final String hintText;
   final Object? value;
   final void Function(Object?)? onChanged;
   final List<DropdownMenuItem<Object>>? items;
@@ -677,7 +652,6 @@ class _AddressDropdownButton extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
         isExpanded: true,
-        // hint: Text(hintText),
         value: value,
         onChanged: onChanged,
         items: items,
@@ -714,7 +688,7 @@ class _AddressLabel extends GetView<AddressController> {
     Get.put(AddressController(), tag: tagController);
     return Obx(
       () => Visibility(
-        visible: controller.showLabel.value,
+        visible: controller.labelEnable.value,
         child: Container(
           width: width,
           height: height,

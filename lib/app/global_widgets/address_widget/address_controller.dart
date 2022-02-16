@@ -7,162 +7,226 @@ import 'package:hd_getx_module/app/global_widgets/address_widget/address_model.d
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 
 class AddressController extends GetxController {
-  final addressStyle = AddressStyle.oneColumn.obs;
-  final showLabel = true.obs;
-
-  final listCity = [''].obs;
-  final listDistrict = RxList<String>();
-  final listWard = RxList<String>();
-  final listTown = RxList<String>();
-
-  late final selectedCity = RxnString();
-  late final selectedDistrict = RxnString();
-  late final selectedWard = RxnString();
-  final output = ''.obs;
+  // Provider
   final Provider provider = Provider();
 
-  String _cityHint = '';
-  String _districtHint = '';
-  String _wardHint = '';
+  // DropdownButton hint text
+  late final String _cityHint;
+  late final String _districtHint;
+  late final String _wardHint;
 
-  List<City> _listCity = [];
-  List<District> _district = [];
-  List<Ward> _ward = [];
+  // Address Style
+  Rx<LayoutMode> layoutMode = LayoutMode.oneColumn.obs;
 
-  void onChangePostcode(String? value) async {
-    if (value != null) {
-      if (value.length < 3) {
-        _listCity.forEach((element) {
-          if (element.code == value) {
-            cityOnChange(element.name);
-          }
-        });
-      } else if (value.length == 3) {
-        var districtListTemp = await provider.fakeDistrict();
-        var temp = District();
-        districtListTemp.forEach((element) {
-          if (element.code == value) {
-            temp = element;
-            return;
-          }
-        });
-        onChangePostcode(temp.parentCode);
-        districtOnChange(temp.name);
-      } else if (value.length == 5) {
-        var wardListTemp = await provider.fakeWard();
-        var temp = Ward();
-        wardListTemp.forEach((element) {
-          if (element.code == value) {
-            temp = element;
-            return;
-          }
-        });
-        onChangePostcode(temp.parentCode);
-        wardOnChange(temp.name);
-      } else {
-        cityOnChange(_cityHint);
-      }
-    }
-  }
+  // Label enable
+  Rx<bool> labelEnable = true.obs;
 
-  void changeShowLabel() {
-    showLabel.value = !showLabel.value;
-  }
+  // DropdownButton list string item
+  RxList<String> cityItems = [''].obs;
+  RxList<String> districtItems = [''].obs;
+  RxList<String> wardItems = [''].obs;
 
-  void changeStyle() {
-    switch (addressStyle.value) {
-      case AddressStyle.oneColumn:
-        addressStyle.value = AddressStyle.twoColumn;
-        break;
-      case AddressStyle.twoColumn:
-        addressStyle.value = AddressStyle.oneColumn;
-        break;
-      default:
-    }
-  }
+  // DropdownButton selected item
+  RxString selectedCityItem = ''.obs;
+  RxString selectedDistrictItem = ''.obs;
+  RxString selectedWardItem = ''.obs;
 
-  void cityOnChange(String? newValue) {
-    selectedCity.value = newValue;
-    fetchDistricts();
-    selectedDistrict.value = _districtHint;
-    // selectedWard.value = _wardHint;
-    listWard.value = [_wardHint];
-  }
-
-  void districtOnChange(String? newValue) {
-    selectedDistrict.value = newValue;
-    fetchWards();
-    // if (newValue == null) {
-    //   selectedDistrict.value = _districtHint;
-    // }
-    // selectedWard.value = _wardHint;
-  }
-
-  void wardOnChange(String? newValue) {
-    log(newValue!);
-    selectedWard.value = newValue;
-  }
-
-  void initNow(String cityHint, String districtHint, String wardHint) {
+  /// Init data
+  void initNow(String cityHint, String districtHint, String wardHint) async {
+    // Init default hint text
     _cityHint = cityHint;
     _districtHint = districtHint;
     _wardHint = wardHint;
-    listCity.value = [cityHint];
-    listDistrict.value = [districtHint];
-    listWard.value = [wardHint];
-    fetchCities();
-    selectedCity.value = cityHint;
-    selectedDistrict.value = districtHint;
-    selectedWard.value = wardHint;
+
+    // Init list string of city, district, ward
+    // API get list string city
+    cityItems.value = await getCityItems();
+    districtItems.value = [districtHint];
+    wardItems.value = [wardHint];
+
+    // Init default selected value of DropdownButton
+    selectedCityItem.value = cityHint;
+    selectedDistrictItem.value = districtHint;
+    selectedWardItem.value = wardHint;
   }
 
-  void fetchCities() async {
-    var result = await provider.fakeCity();
-    _listCity = result;
-    List<String> listCityString = [_cityHint];
-    result.forEach((element) {
-      listCityString.add(element.name!);
+  /// On & Off Label
+  void showLabel() {
+    labelEnable.value = !labelEnable.value;
+  }
+
+  /// Change Layout Mode
+  void changeLayoutMode(LayoutMode add) {
+    layoutMode.value = add;
+  }
+
+  /// Field City on change
+  void cityOnChange(String newValue) async {
+    // Assign new value to selected item obs
+    selectedCityItem.value = newValue;
+
+    // Get District items
+    districtItems.value = await getDistrictItems(newValue);
+
+    // Get selected District item
+    selectedDistrictItem.value = _districtHint;
+
+    // Get Ward items
+    wardItems.value = [_wardHint];
+
+    // Get selected Ward item
+    selectedWardItem.value = _wardHint;
+  }
+
+  /// Field District on change
+  void districtOnChange(String newValue) async {
+    // Assign new value to selected item obs
+    selectedDistrictItem.value = newValue;
+
+    log('District on change : $newValue');
+
+    // Get Ward items by District
+    wardItems.value = await getWardItems(newValue);
+
+    // Get selected Ward item
+    selectedWardItem.value = _wardHint;
+  }
+
+  /// Field Ward on change
+  void wardOnChange(String newValue) {
+    // Assign new value to selected item obs
+    selectedWardItem.value = newValue;
+  }
+
+  /// Get List City Items
+  Future<List<String>> getCityItems() async {
+    // Call API
+    List<City> listCity = await provider.fetchCities();
+
+    // Add default item
+    List<String> listItems = [_cityHint];
+
+    // Add Network List String to List items
+    listCity.forEach((element) {
+      listItems.add(element.name!);
     });
-    listCity.value = listCityString;
+    return listItems;
   }
 
-  void fetchDistricts() async {
-    // get list district
-    var result = await provider.fakeDistrict();
-    _district = result;
-    // add default hint
-    List<String> listDistrictString = [_districtHint];
-    var selectedCode = '';
-    // get city's code
-    _listCity.forEach((element) {
-      if (element.name == selectedCity.value) {
+  /// Get List Districts Items
+  Future<List<String>> getDistrictItems(String cityName) async {
+    // Call API District
+    List<District> listDistricts = await provider.fetchDistricts();
+
+    // Call API City
+    List<City> listCities = await provider.fetchCities();
+
+    // Get District items
+    List<String> listItems = [_districtHint];
+
+    // Selected City's code
+    String selectedCode = '';
+
+    // Get City's code
+    listCities.forEach((element) {
+      if (element.name == cityName) {
         selectedCode = element.code!;
       }
     });
-    // get the choosen list district
-    _district.forEach((element) {
+
+    // Get the choosen District items
+    listDistricts.forEach((element) {
       if (element.parentCode == selectedCode) {
-        listDistrictString.add(element.name!);
+        listItems.add(element.name!);
       }
     });
-    listDistrict.value = listDistrictString;
+
+    return listItems;
   }
 
-  void fetchWards() async {
-    var result = await provider.fakeWard();
-    _ward = result;
-    List<String> listWardString = [_wardHint];
-    var selectedCode = '';
-    _district.forEach((element) {
-      if (element.name == selectedDistrict.value) {
+  /// Get List Ward Items
+  Future<List<String>> getWardItems(String districtName) async {
+    // Call API Ward
+    List<Ward> listWards = await provider.fetchWards();
+
+    // Call API District
+    List<District> listDistricts = await provider.fetchDistricts();
+
+    // Get Ward items
+    List<String> listItems = [_wardHint];
+
+    // Selected District's code
+    String selectedCode = '';
+
+    // Get District's code
+    listDistricts.forEach((element) {
+      if (element.name == districtName) {
         selectedCode = element.code!;
       }
     });
-    _ward.forEach((element) {
+
+    // Get the choosen Ward items
+    listWards.forEach((element) {
       if (element.parentCode == selectedCode) {
-        listWardString.add(element.name!);
+        listItems.add(element.name!);
       }
     });
-    listWard.value = listWardString;
+    return listItems;
+  }
+
+  /// Action when field postcode change
+  void onChangePostcode(String value) async {
+    switch (value.length) {
+      case 2:
+        String cityName = '';
+        List<City> listCities = await provider.fetchCities();
+        listCities.forEach((element) {
+          if (element.code == value) {
+            cityName = element.name!;
+            return;
+          }
+        });
+        if (cityName.isEmpty) {
+          cityOnChange(_cityHint);
+        } else {
+          cityOnChange(cityName);
+        }
+        break;
+      case 3:
+        List<District> listDistricts = await provider.fetchDistricts();
+        District? district;
+        listDistricts.forEach((element) {
+          if (element.code == value) {
+            district = element;
+            return;
+          }
+        });
+        if (district == null) {
+          cityOnChange(_cityHint);
+        } else {
+          onChangePostcode(district!.parentCode!);
+          districtOnChange(district!.name!);
+        }
+        break;
+
+      case 5:
+        List<Ward> listWards = await provider.fetchWards();
+        Ward? ward;
+        listWards.forEach((element) {
+          if (element.code == value) {
+            ward = element;
+            return;
+          }
+        });
+        if (ward == null) {
+          cityOnChange(_cityHint);
+        } else {
+          onChangePostcode(ward!.parentCode!);
+          wardOnChange(ward!.name!);
+        }
+        break;
+      default:
+        cityOnChange(_cityHint);
+    }
   }
 }

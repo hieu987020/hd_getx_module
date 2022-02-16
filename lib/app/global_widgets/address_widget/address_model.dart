@@ -3,17 +3,17 @@
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_json.dart';
 
 class Provider {
-  Future<List<City>> fakeCity() async {
+  Future<List<City>> fetchCities() async {
     var result = (cityJson).map((p) => City.fromMap(p)).toList();
     return result;
   }
 
-  Future<List<District>> fakeDistrict() async {
+  Future<List<District>> fetchDistricts() async {
     var result = (districtJson).map((p) => District.fromMap(p)).toList();
     return result;
   }
 
-  Future<List<Ward>> fakeWard() async {
+  Future<List<Ward>> fetchWards() async {
     var result = (wardJson).map((p) => Ward.fromMap(p)).toList();
     return result;
   }
