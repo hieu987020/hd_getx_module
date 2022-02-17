@@ -1,29 +1,30 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_controller.dart';
 
-enum LayoutMode { oneColumn, twoColumn }
+enum LayoutMode {
+  oneColumn,
+  twoColumn,
+}
 
 enum WidgetMapping {
   title,
   menu,
-  label_street,
-  label_town,
-  label_postcode,
-  label_city,
-  label_district,
-  label_ward,
-  field_street,
-  field_town,
-  field_postcode,
-  field_city,
-  field_district,
-  field_ward,
+  labelStreet,
+  labelTown,
+  labelPostcode,
+  labelCity,
+  labelDistrict,
+  labelWard,
+  fieldStreet,
+  fieldTown,
+  fieldPostcode,
+  fieldCity,
+  fieldDistrict,
+  fieldWard,
 }
 
 class AddressWidget extends GetView<AddressController> {
@@ -137,18 +138,18 @@ class AddressWidget extends GetView<AddressController> {
     Map<WidgetMapping, Widget> map = {};
     map.putIfAbsent(WidgetMapping.title, () => titleWidget);
     map.putIfAbsent(WidgetMapping.menu, () => menu);
-    map.putIfAbsent(WidgetMapping.label_street, () => streetLabel);
-    map.putIfAbsent(WidgetMapping.label_town, () => townLabel);
-    map.putIfAbsent(WidgetMapping.label_postcode, () => postCodeLabel);
-    map.putIfAbsent(WidgetMapping.label_city, () => cityLabel);
-    map.putIfAbsent(WidgetMapping.label_district, () => districtLabel);
-    map.putIfAbsent(WidgetMapping.label_ward, () => wardLabel);
-    map.putIfAbsent(WidgetMapping.field_street, () => streetTextfield);
-    map.putIfAbsent(WidgetMapping.field_town, () => townTextfield);
-    map.putIfAbsent(WidgetMapping.field_postcode, () => postCodeTextfield);
-    map.putIfAbsent(WidgetMapping.field_city, () => cityDropdown);
-    map.putIfAbsent(WidgetMapping.field_district, () => districtDropdown);
-    map.putIfAbsent(WidgetMapping.field_ward, () => wardDropdown);
+    map.putIfAbsent(WidgetMapping.labelStreet, () => streetLabel);
+    map.putIfAbsent(WidgetMapping.labelTown, () => townLabel);
+    map.putIfAbsent(WidgetMapping.labelPostcode, () => postCodeLabel);
+    map.putIfAbsent(WidgetMapping.labelCity, () => cityLabel);
+    map.putIfAbsent(WidgetMapping.labelDistrict, () => districtLabel);
+    map.putIfAbsent(WidgetMapping.labelWard, () => wardLabel);
+    map.putIfAbsent(WidgetMapping.fieldStreet, () => streetTextfield);
+    map.putIfAbsent(WidgetMapping.fieldTown, () => townTextfield);
+    map.putIfAbsent(WidgetMapping.fieldPostcode, () => postCodeTextfield);
+    map.putIfAbsent(WidgetMapping.fieldCity, () => cityDropdown);
+    map.putIfAbsent(WidgetMapping.fieldDistrict, () => districtDropdown);
+    map.putIfAbsent(WidgetMapping.fieldWard, () => wardDropdown);
     return map;
   }
 
@@ -158,7 +159,7 @@ class AddressWidget extends GetView<AddressController> {
     Get.put(AddressController(), tag: tagController);
 
     // Init data
-    controller.initNow(cityHintText, districtHintText, wardHint);
+    controller.initValue(cityHintText, districtHintText, wardHint);
 
     // FocusNode
     FocusNode streetNode = FocusNode();
@@ -167,7 +168,7 @@ class AddressWidget extends GetView<AddressController> {
     FocusNode cityNode = FocusNode();
     FocusNode districtNode = FocusNode();
     FocusNode wardNode = FocusNode();
-    cityNode.canRequestFocus = true;
+
     // Add listender
     _addListener(
       streetNode,
@@ -199,7 +200,7 @@ class AddressWidget extends GetView<AddressController> {
       hintText: streetHintText,
       controller: streetController,
       focusNode: streetNode,
-      onFieldSubmitted: (value) => townNode.requestFocus(),
+      // onFieldSubmitted: (value) => townNode.requestFocus(),
     );
 
     // Textfield : Town
@@ -232,13 +233,16 @@ class AddressWidget extends GetView<AddressController> {
         height: fieldHeight,
         margin: childPadding,
         value: controller.selectedCityItem.value,
-        onChanged: (newValue) => controller.cityOnChange(newValue.toString()),
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.cityOnChange(newValue.toString());
+        },
         focusNode: cityNode,
         items:
             controller.cityItems.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(value: value, child: Text(value));
         }).toList(),
-        // onTap: () => cityNode.requestFocus(),
+        onTap: () => cityNode.requestFocus(),
       );
     });
 
@@ -249,8 +253,10 @@ class AddressWidget extends GetView<AddressController> {
         height: fieldHeight,
         margin: childPadding,
         value: controller.selectedDistrictItem.value,
-        onChanged: (Object? newValue) =>
-            controller.districtOnChange(newValue.toString()),
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.districtOnChange(newValue.toString());
+        },
         focusNode: districtNode,
         items: controller.districtItems
             .map<DropdownMenuItem<String>>((String value) {
@@ -268,8 +274,10 @@ class AddressWidget extends GetView<AddressController> {
         margin: childPadding,
         value: controller.selectedWardItem.value,
         focusNode: wardNode,
-        onChanged: (Object? newValue) =>
-            controller.wardOnChange(newValue.toString()),
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.wardOnChange(newValue.toString());
+        },
         items:
             controller.wardItems.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(value: value, child: Text(value));
@@ -393,45 +401,45 @@ class StyleOneColumn extends StatelessWidget {
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_street]!,
+            map[WidgetMapping.labelStreet]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(2),
-              child: map[WidgetMapping.field_street]!,
+              child: map[WidgetMapping.fieldStreet]!,
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_town]!,
+            map[WidgetMapping.labelTown]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(3),
-              child: map[WidgetMapping.field_town]!,
+              child: map[WidgetMapping.fieldTown]!,
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_postcode]!,
+            map[WidgetMapping.labelPostcode]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(4),
-              child: map[WidgetMapping.field_postcode]!,
+              child: map[WidgetMapping.fieldPostcode]!,
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_city]!,
+            map[WidgetMapping.labelCity]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(5),
-              child: map[WidgetMapping.field_city]!,
+              child: map[WidgetMapping.fieldCity]!,
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_district]!,
+            map[WidgetMapping.labelDistrict]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(6),
-              child: map[WidgetMapping.field_district]!,
+              child: map[WidgetMapping.fieldDistrict]!,
             ),
           ]),
           Row(children: [
-            map[WidgetMapping.label_ward]!,
+            map[WidgetMapping.labelWard]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(7),
-              child: map[WidgetMapping.field_ward]!,
+              child: map[WidgetMapping.fieldWard]!,
             ),
           ]),
         ],
@@ -463,37 +471,37 @@ class StyleTwoColumn extends StatelessWidget {
           Row(
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                map[WidgetMapping.label_street]!,
+                map[WidgetMapping.labelStreet]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(2),
-                  child: map[WidgetMapping.field_street]!,
+                  child: map[WidgetMapping.fieldStreet]!,
                 ),
-                map[WidgetMapping.label_town]!,
+                map[WidgetMapping.labelTown]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(3),
-                  child: map[WidgetMapping.field_town]!,
+                  child: map[WidgetMapping.fieldTown]!,
                 ),
-                map[WidgetMapping.label_postcode]!,
+                map[WidgetMapping.labelPostcode]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(4),
-                  child: map[WidgetMapping.field_postcode]!,
+                  child: map[WidgetMapping.fieldPostcode]!,
                 ),
               ]),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                map[WidgetMapping.label_city]!,
+                map[WidgetMapping.labelCity]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(5),
-                  child: map[WidgetMapping.field_city]!,
+                  child: map[WidgetMapping.fieldCity]!,
                 ),
-                map[WidgetMapping.label_district]!,
+                map[WidgetMapping.labelDistrict]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(6),
-                  child: map[WidgetMapping.field_district]!,
+                  child: map[WidgetMapping.fieldDistrict]!,
                 ),
-                map[WidgetMapping.label_ward]!,
+                map[WidgetMapping.labelWard]!,
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(7),
-                  child: map[WidgetMapping.field_ward]!,
+                  child: map[WidgetMapping.fieldWard]!,
                 ),
               ]),
             ],

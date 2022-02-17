@@ -32,7 +32,7 @@ class AddressController extends GetxController {
   RxString selectedWardItem = ''.obs;
 
   /// Init data
-  void initNow(String cityHint, String districtHint, String wardHint) async {
+  void initValue(String cityHint, String districtHint, String wardHint) async {
     // Init default hint text
     _cityHint = cityHint;
     _districtHint = districtHint;
@@ -60,8 +60,66 @@ class AddressController extends GetxController {
     layoutMode.value = add;
   }
 
+  /// Field Postcode on change
+  Future<void> onChangePostcode(String value) async {
+    switch (value.length) {
+      case 2:
+        String cityName = '';
+        List<City> listCities = await provider.fetchCities();
+        listCities.forEach((element) {
+          if (element.code == value) {
+            cityName = element.name!;
+            return;
+          }
+        });
+        if (cityName.isEmpty) {
+          await cityOnChange(_cityHint);
+        } else {
+          await cityOnChange(cityName);
+        }
+        break;
+      case 3:
+        List<District> listDistricts = await provider.fetchDistricts();
+        District? district;
+        listDistricts.forEach((element) {
+          if (element.code == value) {
+            district = element;
+            return;
+          }
+        });
+        if (district == null) {
+          await cityOnChange(_cityHint);
+        } else {
+          await onChangePostcode(district!.parentCode!);
+          await districtOnChange(district!.name!);
+        }
+        break;
+
+      case 5:
+        List<Ward> listWards = await provider.fetchWards();
+        Ward? ward;
+        listWards.forEach((element) {
+          if (element.code == value) {
+            ward = element;
+            return;
+          }
+        });
+        if (ward == null) {
+          cityOnChange(_cityHint);
+        } else {
+          await onChangePostcode(ward!.parentCode!);
+          await wardOnChange(ward!.name!);
+        }
+        break;
+      default:
+        await cityOnChange(_cityHint);
+    }
+  }
+
   /// Field City on change
-  void cityOnChange(String newValue) async {
+  Future<String> cityOnChange(String newValue) async {
+    log('City on change : $newValue');
+
     // Assign new value to selected item obs
     selectedCityItem.value = newValue;
 
@@ -76,10 +134,21 @@ class AddressController extends GetxController {
 
     // Get selected Ward item
     selectedWardItem.value = _wardHint;
+
+    // Get selected code
+    String selectedCode = '';
+    List<City> listCities = await provider.fetchCities();
+    listCities.forEach((element) {
+      if (element.name == newValue) {
+        selectedCode = element.code!;
+        return;
+      }
+    });
+    return selectedCode;
   }
 
   /// Field District on change
-  void districtOnChange(String newValue) async {
+  Future<String> districtOnChange(String newValue) async {
     // Assign new value to selected item obs
     selectedDistrictItem.value = newValue;
 
@@ -90,12 +159,36 @@ class AddressController extends GetxController {
 
     // Get selected Ward item
     selectedWardItem.value = _wardHint;
+
+    // Get selected code
+    String selectedCode = '';
+    List<District> listDistricts = await provider.fetchDistricts();
+    listDistricts.forEach((element) {
+      if (element.name == newValue) {
+        selectedCode = element.code!;
+        return;
+      }
+    });
+    return selectedCode;
   }
 
   /// Field Ward on change
-  void wardOnChange(String newValue) {
+  Future<String> wardOnChange(String newValue) async {
     // Assign new value to selected item obs
     selectedWardItem.value = newValue;
+
+    log('Ward on change : $newValue');
+
+    // Get selected code
+    String selectedCode = '';
+    List<Ward> listWards = await provider.fetchWards();
+    listWards.forEach((element) {
+      if (element.name == newValue) {
+        selectedCode = element.code!;
+        return;
+      }
+    });
+    return selectedCode;
   }
 
   /// Get List City Items
@@ -172,61 +265,5 @@ class AddressController extends GetxController {
       }
     });
     return listItems;
-  }
-
-  /// Action when field postcode change
-  void onChangePostcode(String value) async {
-    switch (value.length) {
-      case 2:
-        String cityName = '';
-        List<City> listCities = await provider.fetchCities();
-        listCities.forEach((element) {
-          if (element.code == value) {
-            cityName = element.name!;
-            return;
-          }
-        });
-        if (cityName.isEmpty) {
-          cityOnChange(_cityHint);
-        } else {
-          cityOnChange(cityName);
-        }
-        break;
-      case 3:
-        List<District> listDistricts = await provider.fetchDistricts();
-        District? district;
-        listDistricts.forEach((element) {
-          if (element.code == value) {
-            district = element;
-            return;
-          }
-        });
-        if (district == null) {
-          cityOnChange(_cityHint);
-        } else {
-          onChangePostcode(district!.parentCode!);
-          districtOnChange(district!.name!);
-        }
-        break;
-
-      case 5:
-        List<Ward> listWards = await provider.fetchWards();
-        Ward? ward;
-        listWards.forEach((element) {
-          if (element.code == value) {
-            ward = element;
-            return;
-          }
-        });
-        if (ward == null) {
-          cityOnChange(_cityHint);
-        } else {
-          onChangePostcode(ward!.parentCode!);
-          wardOnChange(ward!.name!);
-        }
-        break;
-      default:
-        cityOnChange(_cityHint);
-    }
   }
 }
