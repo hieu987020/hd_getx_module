@@ -25,6 +25,7 @@ enum WidgetMapping {
   fieldCity,
   fieldDistrict,
   fieldWard,
+  example,
 }
 
 class AddressWidget extends GetView<AddressController> {
@@ -134,7 +135,8 @@ class AddressWidget extends GetView<AddressController> {
       Widget postCodeTextfield,
       Widget cityDropdown,
       Widget districtDropdown,
-      Widget wardDropdown) {
+      Widget wardDropdown,
+      Widget example) {
     Map<WidgetMapping, Widget> map = {};
     map.putIfAbsent(WidgetMapping.title, () => titleWidget);
     map.putIfAbsent(WidgetMapping.menu, () => menu);
@@ -150,6 +152,7 @@ class AddressWidget extends GetView<AddressController> {
     map.putIfAbsent(WidgetMapping.fieldCity, () => cityDropdown);
     map.putIfAbsent(WidgetMapping.fieldDistrict, () => districtDropdown);
     map.putIfAbsent(WidgetMapping.fieldWard, () => wardDropdown);
+    map.putIfAbsent(WidgetMapping.example, () => example);
     return map;
   }
 
@@ -334,6 +337,17 @@ class AddressWidget extends GetView<AddressController> {
       tagController: tagController,
     );
 
+    final _AutocompleteExample example = _AutocompleteExample(
+      items: controller.cityItems,
+      width: fieldWidth,
+      height: fieldHeight,
+      margin: childPadding,
+      onSelected: (newValue) async {
+        postCodeController.text =
+            await controller.cityOnChange(newValue.toString());
+      },
+    );
+
     var map = _mappingWidget(
       titleWidget,
       menu,
@@ -349,6 +363,7 @@ class AddressWidget extends GetView<AddressController> {
       cityDropdown,
       districtDropdown,
       wardDropdown,
+      example,
     );
 
     final Obx child = Obx(() {
@@ -425,7 +440,7 @@ class StyleOneColumn extends StatelessWidget {
             map[WidgetMapping.labelCity]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(5),
-              child: map[WidgetMapping.fieldCity]!,
+              child: map[WidgetMapping.example]!,
             ),
           ]),
           Row(children: [
@@ -711,94 +726,45 @@ class _AddressLabel extends GetView<AddressController> {
   }
 }
 
-// class _AutocompleteExample extends StatelessWidget {
-//   const _AutocompleteExample({
-//     Key? key,
-//     required this.list,
-//   }) : super(key: key);
-
-//   final List<String> list;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(
-//         border: Border.all(color: Colors.white),
-//       ),
-//       width: 260,
-//       child: Autocomplete<String>(
-//         optionsBuilder: (TextEditingValue textEditingValue) {
-//           if (textEditingValue.text == '') {
-//             return const Iterable<String>.empty();
-//           }
-//           return list.where((String option) {
-//             return option
-//                 .toLowerCase()
-//                 .contains(textEditingValue.text.toLowerCase());
-//           });
-//         },
-//         onSelected: (String selection) {
-//           debugPrint('You just selected $selection');
-//         },
-//         fieldViewBuilder: (BuildContext context,
-//             TextEditingController fieldTextEditingController,
-//             FocusNode fieldFocusNode,
-//             VoidCallback onFieldSubmitted) {
-//           return TextField(
-//             controller: fieldTextEditingController,
-//             focusNode: fieldFocusNode,
-//             style: const TextStyle(fontWeight: FontWeight.bold),
-//           );
-//         },
-//         optionsViewBuilder: (
-//           BuildContext context,
-//           AutocompleteOnSelected<String> onSelected,
-//           Iterable<String> options,
-//         ) {
-//           return Align(
-//             alignment: Alignment.topLeft,
-//             child: Material(
-//               child: Container(
-//                 width: 300,
-//                 color: Colors.teal,
-//                 child: ListView.builder(
-//                   padding: const EdgeInsets.all(10.0),
-//                   itemCount: options.length,
-//                   itemBuilder: (BuildContext context, int index) {
-//                     final String option = options.elementAt(index);
-
-//                     return GestureDetector(
-//                       onTap: () {
-//                         onSelected(option);
-//                       },
-//                       child: ListTile(
-//                         title: Text(option,
-//                             style: const TextStyle(color: Colors.white)),
-//                       ),
-//                     );
-//                   },
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// Obx exam = Obx(() {
-//   return AutocompleteBasicExample(
-//     list: controller.listCity,
-//   );
-// });
-// Widget exam = AutocompleteBasicExample(
-//   list: [
-//     'Hồ Chí Minh',
-//     'Hà Nội',
-//     'Đà Nẵng',
-//   ],
-// );
-// Widget exam = AutocompleteBasicExample(
-//   list: controller.listCity,
-// );
+class _AutocompleteExample extends StatelessWidget {
+  const _AutocompleteExample({
+    Key? key,
+    this.width,
+    this.height,
+    this.margin,
+    required this.items,
+    this.onSelected,
+  }) : super(key: key);
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry? margin;
+  final List<String> items;
+  final void Function(String)? onSelected;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      child: Autocomplete<String>(
+        // displayStringForOption: _displayStringForOption,
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          if (textEditingValue.text == '') {
+            return items.where((String option) {
+              return option
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase());
+            });
+          }
+          return items.where((String option) {
+            return option
+                .toLowerCase()
+                .contains(textEditingValue.text.toLowerCase());
+          });
+        },
+        onSelected: onSelected,
+        // initialValue: ,
+      ),
+    );
+  }
+}

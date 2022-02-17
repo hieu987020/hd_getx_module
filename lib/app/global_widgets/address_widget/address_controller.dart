@@ -3,13 +3,15 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:hd_getx_module/app/global_widgets/address_widget/address_model.dart';
+import 'package:hd_getx_module/app/data/model/model.dart';
+import 'package:hd_getx_module/app/data/provider/provider.dart';
 import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 
 class AddressController extends GetxController {
   // Provider
-  final Provider provider = Provider();
-
+  final CityProvider _cityProvider = CityProvider();
+  final DistrictProvider _districtProvider = DistrictProvider();
+  final WardProvider _wardProvider = WardProvider();
   // DropdownButton hint text
   late final String _cityHint;
   late final String _districtHint;
@@ -65,7 +67,7 @@ class AddressController extends GetxController {
     switch (value.length) {
       case 2:
         String cityName = '';
-        List<City> listCities = await provider.fetchCities();
+        List<City> listCities = await _cityProvider.fetchCities();
         listCities.forEach((element) {
           if (element.code == value) {
             cityName = element.name!;
@@ -79,7 +81,7 @@ class AddressController extends GetxController {
         }
         break;
       case 3:
-        List<District> listDistricts = await provider.fetchDistricts();
+        List<District> listDistricts = await _districtProvider.fetchDistricts();
         District? district;
         listDistricts.forEach((element) {
           if (element.code == value) {
@@ -96,7 +98,7 @@ class AddressController extends GetxController {
         break;
 
       case 5:
-        List<Ward> listWards = await provider.fetchWards();
+        List<Ward> listWards = await _wardProvider.fetchWards();
         Ward? ward;
         listWards.forEach((element) {
           if (element.code == value) {
@@ -137,7 +139,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     String selectedCode = '';
-    List<City> listCities = await provider.fetchCities();
+    List<City> listCities = await _cityProvider.fetchCities();
     listCities.forEach((element) {
       if (element.name == newValue) {
         selectedCode = element.code!;
@@ -162,7 +164,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     String selectedCode = '';
-    List<District> listDistricts = await provider.fetchDistricts();
+    List<District> listDistricts = await _districtProvider.fetchDistricts();
     listDistricts.forEach((element) {
       if (element.name == newValue) {
         selectedCode = element.code!;
@@ -181,7 +183,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     String selectedCode = '';
-    List<Ward> listWards = await provider.fetchWards();
+    List<Ward> listWards = await _wardProvider.fetchWards();
     listWards.forEach((element) {
       if (element.name == newValue) {
         selectedCode = element.code!;
@@ -194,7 +196,7 @@ class AddressController extends GetxController {
   /// Get List City Items
   Future<List<String>> getCityItems() async {
     // Call API
-    List<City> listCity = await provider.fetchCities();
+    List<City> listCity = await _cityProvider.fetchCities();
 
     // Add default item
     List<String> listItems = [_cityHint];
@@ -209,10 +211,10 @@ class AddressController extends GetxController {
   /// Get List Districts Items
   Future<List<String>> getDistrictItems(String cityName) async {
     // Call API District
-    List<District> listDistricts = await provider.fetchDistricts();
+    List<District> listDistricts = await _districtProvider.fetchDistricts();
 
     // Call API City
-    List<City> listCities = await provider.fetchCities();
+    List<City> listCities = await _cityProvider.fetchCities();
 
     // Get District items
     List<String> listItems = [_districtHint];
@@ -240,10 +242,10 @@ class AddressController extends GetxController {
   /// Get List Ward Items
   Future<List<String>> getWardItems(String districtName) async {
     // Call API Ward
-    List<Ward> listWards = await provider.fetchWards();
+    List<Ward> listWards = await _wardProvider.fetchWards();
 
     // Call API District
-    List<District> listDistricts = await provider.fetchDistricts();
+    List<District> listDistricts = await _districtProvider.fetchDistricts();
 
     // Get Ward items
     List<String> listItems = [_wardHint];
