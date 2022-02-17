@@ -46,12 +46,13 @@ class AddressWidget extends GetView<AddressController> {
     required this.districtLabelText,
     required this.wardLabelText,
     required this.streetHintText,
-    required this.townHint,
+    required this.townHintText,
     required this.postCodeHintText,
     required this.cityHintText,
     required this.districtHintText,
-    required this.wardHint,
+    required this.wardHintText,
     this.jsonOutput,
+    this.func1,
     this.width,
     this.height,
     this.alignment,
@@ -83,9 +84,10 @@ class AddressWidget extends GetView<AddressController> {
   final String postCodeHintText;
   final String cityHintText;
   final String districtHintText;
-  final String wardHint;
-  final String townHint;
+  final String wardHintText;
+  final String townHintText;
   final TextEditingController? jsonOutput;
+  final void Function()? func1;
   //? Basic Container
   final double? width;
   final double? height;
@@ -162,7 +164,7 @@ class AddressWidget extends GetView<AddressController> {
     Get.put(AddressController(), tag: tagController);
 
     // Init data
-    controller.initValue(cityHintText, districtHintText, wardHint);
+    controller.initValue(cityHintText, districtHintText, wardHintText);
 
     // FocusNode
     FocusNode streetNode = FocusNode();
@@ -211,7 +213,7 @@ class AddressWidget extends GetView<AddressController> {
       width: fieldWidth,
       height: fieldHeight,
       childPadding: childPadding,
-      hintText: townHint,
+      hintText: townHintText,
       controller: townController,
       focusNode: townNode,
       // onFieldSubmitted: (value) => postCodeNode.requestFocus(),
@@ -742,6 +744,7 @@ class _AutocompleteExample extends StatelessWidget {
   final void Function(String)? onSelected;
   @override
   Widget build(BuildContext context) {
+    TextEditingValue defaultValue = const TextEditingValue(text: 'a');
     return Container(
       width: width,
       height: height,
@@ -763,7 +766,7 @@ class _AutocompleteExample extends StatelessWidget {
           });
         },
         onSelected: onSelected,
-        // initialValue: ,
+        initialValue: defaultValue,
       ),
     );
   }
