@@ -5,13 +5,14 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:hd_getx_module/app/data/model/model.dart';
 import 'package:hd_getx_module/app/data/repositories/repositories.dart';
-import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
+import 'package:hd_getx_module/app/wateros_widgets/packages/address_widget/address.dart';
 
 class AddressController extends GetxController {
   // Provider
   final CityRepository _cityRepository = CityRepository();
   final DistrictRepository _districtRepository = DistrictRepository();
   final WardRepository _wardRepository = WardRepository();
+
   // DropdownButton hint text
   late final String _cityHint;
   late final String _districtHint;
@@ -63,13 +64,13 @@ class AddressController extends GetxController {
   }
 
   /// Field Postcode on change
-  Future<void> onChangePostcode(String value) async {
-    switch (value.length) {
+  Future<void> onChangePostcode(String postCode) async {
+    switch (postCode.length) {
       case 2:
         String cityName = '';
         List<City> listCities = await _cityRepository.getCities();
         listCities.forEach((element) {
-          if (element.code == value) {
+          if (element.code == postCode) {
             cityName = element.name!;
             return;
           }
@@ -84,7 +85,7 @@ class AddressController extends GetxController {
         List<District> listDistricts = await _districtRepository.getDistricts();
         District? district;
         listDistricts.forEach((element) {
-          if (element.code == value) {
+          if (element.code == postCode) {
             district = element;
             return;
           }
@@ -101,7 +102,7 @@ class AddressController extends GetxController {
         List<Ward> listWards = await _wardRepository.getWards();
         Ward? ward;
         listWards.forEach((element) {
-          if (element.code == value) {
+          if (element.code == postCode) {
             ward = element;
             return;
           }

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hd_getx_module/app/global_widgets/address_widget/address_widget.dart';
 import 'package:hd_getx_module/app/modules/home/controllers/home_controller.dart';
+import 'package:hd_getx_module/app/wateros_widgets/packages/address_widget/address.dart';
 
 const titleText = "Thông tin người liên hệ";
 const streetHintText = "Nhập Số nhà/Tên đường";
