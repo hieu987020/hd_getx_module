@@ -12,13 +12,16 @@ class StyleTwoColumn extends StatelessWidget {
       policy: OrderedTraversalPolicy(),
       child: Column(
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            map[WidgetMapping.title]!,
-            FocusTraversalOrder(
-              order: const NumericFocusOrder(1),
-              child: map[WidgetMapping.menu]!,
-            ),
-          ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              map[WidgetMapping.title]!,
+              FocusTraversalOrder(
+                order: const NumericFocusOrder(1),
+                child: map[WidgetMapping.menu]!,
+              ),
+            ],
+          ),
           Row(
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

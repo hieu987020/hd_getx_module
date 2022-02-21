@@ -44,7 +44,7 @@ class StyleOneColumn extends StatelessWidget {
             map[WidgetMapping.labelCity]!,
             FocusTraversalOrder(
               order: const NumericFocusOrder(5),
-              child: map[WidgetMapping.example]!,
+              child: map[WidgetMapping.fieldCity]!,
             ),
           ]),
           Row(children: [
