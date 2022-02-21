@@ -140,46 +140,73 @@ class AddressWidget extends GetView<AddressController> {
       onFieldSubmitted: (value) => cityNode.requestFocus(),
     );
 
-    final cityDropdown = AddressDropdownButton(
-      width: fieldWidth,
-      height: fieldHeight,
-      margin: childPadding,
-      // value: controller.selectedCityItem.value,
-      onChanged: (newValue) async {
-        postCodeController.text =
-            await controller.cityOnChange(newValue.toString());
-      },
-      focusNode: cityNode,
-      type: 'city',
-      tagController: tagController,
+    final cityDropdown = Obx(
+      () => AddressDropdownButton(
+        width: fieldWidth,
+        height: fieldHeight,
+        margin: childPadding,
+        value: controller.selectedCityItem.value,
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.cityOnChange(newValue.toString());
+        },
+        items:
+            controller.cityItems.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        focusNode: cityNode,
+        type: 'city',
+        tagController: tagController,
+      ),
     );
 
-    final districtDropdown = AddressDropdownButton(
-      width: fieldWidth,
-      height: fieldHeight,
-      margin: childPadding,
-      // value: controller.selectedDistrictItem.value,
-      onChanged: (newValue) async {
-        postCodeController.text =
-            await controller.districtOnChange(newValue.toString());
-      },
-      focusNode: districtNode,
-      type: 'district',
-      tagController: tagController,
+    final districtDropdown = Obx(
+      () => AddressDropdownButton(
+        width: fieldWidth,
+        height: fieldHeight,
+        margin: childPadding,
+        value: controller.selectedDistrictItem.value,
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.districtOnChange(newValue.toString());
+        },
+        items: controller.districtItems
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        focusNode: districtNode,
+        type: 'district',
+        tagController: tagController,
+      ),
     );
 
-    final wardDropdown = AddressDropdownButton(
-      width: fieldWidth,
-      height: fieldHeight,
-      margin: childPadding,
-      // value: controller.selectedWardItem.value,
-      focusNode: wardNode,
-      onChanged: (newValue) async {
-        postCodeController.text =
-            await controller.wardOnChange(newValue.toString());
-      },
-      type: 'ward',
-      tagController: tagController,
+    final wardDropdown = Obx(
+      () => AddressDropdownButton(
+        width: fieldWidth,
+        height: fieldHeight,
+        margin: childPadding,
+        value: controller.selectedWardItem.value,
+        focusNode: wardNode,
+        onChanged: (newValue) async {
+          postCodeController.text =
+              await controller.wardOnChange(newValue.toString());
+        },
+        items:
+            controller.wardItems.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        type: 'ward',
+        tagController: tagController,
+      ),
     );
 
     final AddressLabel streetLabel = AddressLabel(

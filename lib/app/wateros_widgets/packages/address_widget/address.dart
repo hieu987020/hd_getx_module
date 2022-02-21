@@ -13,10 +13,10 @@ export '../address_widget/lib/src/utils/focusnode_listener.dart';
 export '../address_widget/lib/src/model/address_json.dart';
 
 // export commons
-export '../address_widget/lib/src/common/dropdown_autocomplete.dart';
-export '../address_widget/lib/src/common/dropdown_button.dart';
-export '../address_widget/lib/src/common/label.dart';
-export '../address_widget/lib/src/common/menu.dart';
+export '../address_widget/lib/src/common/address_autocomplete.dart';
+export '../address_widget/lib/src/common/address_dropdownbutton.dart';
+export '../address_widget/lib/src/common/address_label.dart';
+export '../address_widget/lib/src/common/address_menu.dart';
 export '../address_widget/lib/src/common/one_column_layout.dart';
 export '../address_widget/lib/src/common/two_column_layout.dart';
-export '../address_widget/lib/src/common/textfield.dart';
+export '../address_widget/lib/src/common/address_textfield.dart';
