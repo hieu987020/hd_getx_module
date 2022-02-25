@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hd_getx_module/app/data/repositories/repositories.dart';
+import 'package:hd_getx_module/app/data/services/address_service.dart';
 import 'package:hd_getx_module/app/modules/home/controllers/home_controller.dart';
 import 'package:hd_getx_module/app/wateros_widgets/packages/address_widget/address.dart';
 
@@ -23,7 +25,6 @@ const wardLabelText = "Xã/Phường/Thị trấn:(*)";
 class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController output = TextEditingController(text: '');
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -41,7 +42,6 @@ class HomeView extends GetView<HomeController> {
                 color: Colors.black,
                 titlePadding: const EdgeInsets.all(20),
                 childPadding: const EdgeInsets.symmetric(horizontal: 10),
-                jsonOutput: output,
                 titleText: titleText,
                 streetLabelText: streetLabelText,
                 townLabelText: townLabelText,
@@ -55,7 +55,23 @@ class HomeView extends GetView<HomeController> {
                 cityHintText: cityHintText,
                 districtHintText: districtHintText,
                 wardHintText: wardHint,
-                func1: () {},
+                dataProvider: ({
+                  addressFilter,
+                  name,
+                  hintText,
+                  postcode,
+                }) {
+                  return AddressService(
+                    cityRepository: CityRepository(),
+                    districtRepository: DistrictRepository(),
+                    wardRepository: WardRepository(),
+                  ).addressService(
+                    addressFilter: addressFilter,
+                    name: name,
+                    hintText: hintText,
+                    postcode: postcode,
+                  );
+                },
               ),
               const SizedBox(height: 10),
               // ElevatedButton(

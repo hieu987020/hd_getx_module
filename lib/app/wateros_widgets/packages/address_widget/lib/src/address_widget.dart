@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hd_getx_module/app/data/services/address_service.dart';
 import 'package:hd_getx_module/app/wateros_widgets/packages/address_widget/address.dart';
 
 class AddressWidget extends GetView<AddressController> {
@@ -25,8 +26,7 @@ class AddressWidget extends GetView<AddressController> {
     required this.cityHintText,
     required this.districtHintText,
     required this.wardHintText,
-    this.jsonOutput,
-    this.func1,
+    this.dataProvider,
     this.width,
     this.height,
     this.alignment,
@@ -40,6 +40,7 @@ class AddressWidget extends GetView<AddressController> {
     this.transformAlignment,
     this.clipBehavior = Clip.none,
   });
+
   final String? tagController;
   final String titleText;
   final EdgeInsetsGeometry? titlePadding;
@@ -60,8 +61,13 @@ class AddressWidget extends GetView<AddressController> {
   final String districtHintText;
   final String wardHintText;
   final String townHintText;
-  final TextEditingController? jsonOutput;
-  final void Function()? func1;
+  final Future Function({
+    AddressFilter? addressFilter,
+    String? name,
+    String? hintText,
+    String? postcode,
+  })? dataProvider;
+
   //? Basic Container
   final double? width;
   final double? height;
@@ -85,6 +91,10 @@ class AddressWidget extends GetView<AddressController> {
     // Get controller
     Get.put(AddressController(), tag: tagController);
 
+    // AddressService param
+    if (dataProvider != null) {
+      controller.dataProvider = dataProvider!;
+    }
     // Init data
     controller.initValue(cityHintText, districtHintText, wardHintText);
 
@@ -140,7 +150,7 @@ class AddressWidget extends GetView<AddressController> {
       onFieldSubmitted: (value) => cityNode.requestFocus(),
     );
 
-    final cityDropdown = Obx(
+    final Obx cityDropdown = Obx(
       () => AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
@@ -163,7 +173,7 @@ class AddressWidget extends GetView<AddressController> {
       ),
     );
 
-    final districtDropdown = Obx(
+    final Obx districtDropdown = Obx(
       () => AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
@@ -186,7 +196,7 @@ class AddressWidget extends GetView<AddressController> {
       ),
     );
 
-    final wardDropdown = Obx(
+    final Obx wardDropdown = Obx(
       () => AddressDropdownButton(
         width: fieldWidth,
         height: fieldHeight,
