@@ -62,7 +62,7 @@ class AddressWidget extends GetView<AddressController> {
   final String wardHintText;
   final String townHintText;
   final Future Function({
-    AddressFilter? addressFilter,
+    AddressCase? addressFilter,
     String? name,
     String? hintText,
     String? postcode,

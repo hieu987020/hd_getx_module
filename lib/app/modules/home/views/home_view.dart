@@ -65,7 +65,7 @@ class HomeView extends GetView<HomeController> {
                     cityRepository: CityRepository(),
                     districtRepository: DistrictRepository(),
                     wardRepository: WardRepository(),
-                  ).addressService(
+                  ).serviceFunction(
                     addressFilter: addressFilter,
                     name: name,
                     hintText: hintText,

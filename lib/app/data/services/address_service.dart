@@ -1,14 +1,31 @@
 import 'package:hd_getx_module/app/data/repositories/repositories.dart';
 
-enum AddressFilter {
+enum AddressCase {
+  /// Get list city's name
   listCityName,
+
+  /// Get list district's name by city's name
   listDistrictName,
+
+  /// Get list ward's name by district's name
   listWardName,
+
+  /// Get city by postcode
   getCityByPostcode,
+
+  /// Get district by postcode
   getDistrictByPostcode,
+
+  /// Get ward by postcode
   getWardByPostcode,
+
+  /// Get postcode by city's name
   getPostcodeByCityName,
+
+  /// Get postcode by district's name
   getPostcodeByDistrictName,
+
+  /// Get postcode by ward's name
   getPostcodeByWardName,
 }
 
@@ -23,43 +40,33 @@ class AddressService {
   final DistrictRepository districtRepository;
   final WardRepository wardRepository;
 
-  addressService({
-    AddressFilter? addressFilter,
+  dynamic serviceFunction({
+    AddressCase? addressFilter,
     String? name,
     String? hintText,
     String? postcode,
   }) async {
     switch (addressFilter) {
-
-      // LIST CITY
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.listCityName:
-        String defaultHintText = '';
+      case AddressCase.listCityName:
+        var defaultHintText = '';
         (hintText == null) ? hintText = defaultHintText : hintText = hintText;
         var listCities = await cityRepository.getCities();
-        List<String> listItems = [hintText];
+        var listItems = [hintText];
 
         for (var element in listCities) {
           listItems.add(element.name!);
         }
         return listItems;
-
-      // LIST DISTRICT
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.listDistrictName:
-        String defaultHintText = '';
+      case AddressCase.listDistrictName:
+        var defaultHintText = '';
         (hintText == null) ? hintText = defaultHintText : hintText = hintText;
         var listDistricts = await districtRepository.getDistricts();
 
         var listCities = await cityRepository.getCities();
 
-        List<String> listItems = [hintText];
+        var listItems = [hintText];
 
-        String selectedCode = '';
+        var selectedCode = '';
 
         for (var element in listCities) {
           if (element.name == name) {
@@ -75,20 +82,16 @@ class AddressService {
 
         return listItems;
 
-      // LIST WARD
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.listWardName:
+      case AddressCase.listWardName:
         String defaultHintText = '';
         (hintText == null) ? hintText = defaultHintText : hintText = hintText;
         var listWards = await wardRepository.getWards();
 
         var listDistricts = await districtRepository.getDistricts();
 
-        List<String> listItems = [hintText];
+        var listItems = [hintText];
 
-        String selectedCode = '';
+        var selectedCode = '';
 
         for (var element in listDistricts) {
           if (element.name == name) {
@@ -103,11 +106,7 @@ class AddressService {
         }
         return listItems;
 
-      // LIST WARD
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getCityByPostcode:
+      case AddressCase.getCityByPostcode:
         var listCities = await cityRepository.getCities();
         for (var element in listCities) {
           if (element.code == postcode) {
@@ -116,10 +115,7 @@ class AddressService {
         }
         return null;
 
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getDistrictByPostcode:
+      case AddressCase.getDistrictByPostcode:
         var listDistricts = await districtRepository.getDistricts();
         for (var element in listDistricts) {
           if (element.code == postcode) {
@@ -127,10 +123,8 @@ class AddressService {
           }
         }
         return null;
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getWardByPostcode:
+
+      case AddressCase.getWardByPostcode:
         var listWards = await wardRepository.getWards();
         for (var element in listWards) {
           if (element.code == postcode) {
@@ -138,10 +132,8 @@ class AddressService {
           }
         }
         return null;
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getPostcodeByCityName:
+
+      case AddressCase.getPostcodeByCityName:
         String? postcode;
         var listCities = await cityRepository.getCities();
         for (var element in listCities) {
@@ -151,10 +143,8 @@ class AddressService {
           }
         }
         return postcode;
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getPostcodeByDistrictName:
+
+      case AddressCase.getPostcodeByDistrictName:
         String? postcode;
         var listDistricts = await districtRepository.getDistricts();
         for (var element in listDistricts) {
@@ -164,10 +154,8 @@ class AddressService {
           }
         }
         return postcode;
-      // --------------------
-      // --------------------
-      // --------------------
-      case AddressFilter.getPostcodeByWardName:
+
+      case AddressCase.getPostcodeByWardName:
         String? postcode;
         var listWards = await wardRepository.getWards();
         for (var element in listWards) {

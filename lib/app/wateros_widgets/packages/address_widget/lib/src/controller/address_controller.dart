@@ -13,7 +13,7 @@ class AddressController extends GetxController {
   late final String _wardHint;
 
   late final Future Function({
-    AddressFilter? addressFilter,
+    AddressCase? addressFilter,
     String? name,
     String? hintText,
     String? postcode,
@@ -55,7 +55,7 @@ class AddressController extends GetxController {
     // Init list string of city, district, ward
     // API get list string city
     var result = await dataProvider.call(
-        addressFilter: AddressFilter.listCityName, hintText: cityHint);
+        addressFilter: AddressCase.listCityName, hintText: cityHint);
 
     (result == null) ? cityItems.value = [cityHint] : cityItems.value = result;
 
@@ -73,7 +73,7 @@ class AddressController extends GetxController {
     switch (postCode.length) {
       case 2:
         var result = await dataProvider.call(
-            addressFilter: AddressFilter.getCityByPostcode, postcode: postCode);
+            addressFilter: AddressCase.getCityByPostcode, postcode: postCode);
         if (result == null) {
           await cityOnChange(_cityHint);
           log('FAIL: Not Address');
@@ -84,7 +84,7 @@ class AddressController extends GetxController {
         break;
       case 3:
         var result = await dataProvider.call(
-            addressFilter: AddressFilter.getDistrictByPostcode,
+            addressFilter: AddressCase.getDistrictByPostcode,
             postcode: postCode);
         if (result == null) {
           await cityOnChange(_cityHint);
@@ -98,7 +98,7 @@ class AddressController extends GetxController {
 
       case 5:
         var result = await dataProvider.call(
-            addressFilter: AddressFilter.getWardByPostcode, postcode: postCode);
+            addressFilter: AddressCase.getWardByPostcode, postcode: postCode);
         if (result == null) {
           await cityOnChange(_cityHint);
           log('FAIL: Not Address');
@@ -122,7 +122,7 @@ class AddressController extends GetxController {
 
     // Get District items
     var result = await dataProvider.call(
-      addressFilter: AddressFilter.listDistrictName,
+      addressFilter: AddressCase.listDistrictName,
       hintText: _districtHint,
       name: cityName,
     );
@@ -141,7 +141,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     return await dataProvider.call(
-      addressFilter: AddressFilter.getPostcodeByCityName,
+      addressFilter: AddressCase.getPostcodeByCityName,
       name: cityName,
     );
   }
@@ -155,7 +155,7 @@ class AddressController extends GetxController {
 
     // Get Ward items by District
     var result = await dataProvider.call(
-      addressFilter: AddressFilter.listWardName,
+      addressFilter: AddressCase.listWardName,
       hintText: _wardHint,
       name: districtName,
     );
@@ -166,7 +166,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     return await dataProvider.call(
-      addressFilter: AddressFilter.getPostcodeByDistrictName,
+      addressFilter: AddressCase.getPostcodeByDistrictName,
       name: districtName,
     );
   }
@@ -180,7 +180,7 @@ class AddressController extends GetxController {
 
     // Get selected code
     return await dataProvider.call(
-      addressFilter: AddressFilter.getPostcodeByWardName,
+      addressFilter: AddressCase.getPostcodeByWardName,
       name: wardName,
     );
   }

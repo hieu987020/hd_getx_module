@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 /// [AddressDropdownButton] is customize DropdownButton widget of FLutter
 class AddressDropdownButton extends StatelessWidget {
@@ -30,28 +29,6 @@ class AddressDropdownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get controller
-    // Get.put(AddressController(), tag: tagController);
-
-    // RxList<String> listString;
-    // RxString selectedValue = RxString('');
-    // switch (type) {
-    //   case 'city':
-    //     listString = controller.cityItems;
-    //     selectedValue = controller.selectedCityItem;
-    //     break;
-    //   case 'district':
-    //     listString = controller.districtItems;
-    //     selectedValue = controller.selectedDistrictItem;
-    //     break;
-    //   case 'ward':
-    //     listString = controller.wardItems;
-    //     selectedValue = controller.selectedWardItem;
-    //     break;
-    //   default:
-    //     listString = controller.cityItems;
-    // }
-
     return Container(
       width: width,
       height: height,
